@@ -4,10 +4,17 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
   workflow_dispatch:
 
 concurrency:
-  group: garage-door-gazette-production
+  group: garage-door-gazette-production-${{ github.event_name }}
   cancel-in-progress: true
 
 permissions:
