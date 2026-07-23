@@ -1,1 +1,2 @@
 Garage Door Gazette production build validation.
+Attempt 2: static metadata routes fixed.
