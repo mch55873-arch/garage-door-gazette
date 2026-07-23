@@ -22,7 +22,7 @@ export function SiteHeader() {
           <nav className="nav" aria-label="Main navigation">
             <a href="/">Home</a>
             <a href="/services/">Services</a>
-            <a href="/locations/">Locations</a>
+            <a href="/areas-we-serve/">Areas We Serve</a>
             <a href="/articles/">Guides</a>
             <a href="/about/">About</a>
             <a href="/contact/">Contact</a>
@@ -33,7 +33,7 @@ export function SiteHeader() {
       <div className="mobile" style={{ borderBottom: "1px solid #dfe6ee", background: "#fff" }}>
         <div className="container" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8, padding: "10px 0" }}>
           <a href="/services/" style={{ textAlign: "center", fontWeight: 900, fontSize: 13 }}>Services</a>
-          <a href="/locations/" style={{ textAlign: "center", fontWeight: 900, fontSize: 13 }}>Locations</a>
+          <a href="/areas-we-serve/" style={{ textAlign: "center", fontWeight: 900, fontSize: 13 }}>Areas</a>
           <a href="/articles/" style={{ textAlign: "center", fontWeight: 900, fontSize: 13 }}>Guides</a>
           <a href="/contact/" style={{ textAlign: "center", fontWeight: 900, fontSize: 13 }}>Contact</a>
         </div>
@@ -60,7 +60,7 @@ export function SiteFooter() {
           <h3>Explore</h3>
           <a href="/about/">About</a>
           <a href="/services/">All {services.length} Services</a>
-          <a href="/locations/">States & Locations</a>
+          <a href="/areas-we-serve/">States & Locations</a>
           <a href="/articles/">Garage Door Guides</a>
           <a href="/contact/">Check Availability</a>
         </div>
