@@ -5,12 +5,12 @@
   "workers_dev": true,
   "routes": [
     {
-      "pattern": "garagedoorgazette.com",
-      "custom_domain": true
+      "pattern": "garagedoorgazette.com/*",
+      "zone_name": "garagedoorgazette.com"
     },
     {
-      "pattern": "www.garagedoorgazette.com",
-      "custom_domain": true
+      "pattern": "www.garagedoorgazette.com/*",
+      "zone_name": "garagedoorgazette.com"
     }
   ],
   "assets": {
