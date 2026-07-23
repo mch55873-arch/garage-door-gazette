@@ -58,8 +58,11 @@ jobs:
           const cities = db.states.reduce((sum, state) => sum + state.cities.length, 0);
           const services = 72;
           const core = 160;
+          const limit = 2000;
+          const sitemapFiles = 1 + db.states.reduce((sum, state) => sum + Math.ceil((state.cities.length * (services + 1)) / limit), 0);
           console.log(`Location database: ${db.states.length} states/DC, ${cities} cities/communities`);
           console.log(`Indexable URL architecture: ${core + cities * (services + 1)} total URLs`);
+          console.log(`Sitemap architecture: ${sitemapFiles} child sitemap files, maximum ${limit} URLs per shard`);
           NODE
 
       - name: Ensure proxied wildcard DNS record
@@ -105,22 +108,20 @@ jobs:
           set -o pipefail
           npx wrangler@latest deploy 2>&1 | tee wrangler-deploy.log
 
-      - name: Verify production URLs
+      - name: Verify production URLs and sitemaps
         shell: bash
         run: |
           set -u
           exec > >(tee production-verification.log) 2>&1
           failures=0
-          echo "=== DNS resolution ==="
-          getent ahosts south-dakota.garagedoorgazette.com || true
-          getent ahosts sioux-falls-south-dakota.garagedoorgazette.com || true
-          echo
+
           check_url() {
             local label="$1"
             local url="$2"
+            local agent="${3:-GarageDoorGazette-CI}"
             local result
             local status
-            result=$(curl --silent --show-error --location --max-redirs 8 --connect-timeout 15 --max-time 60 --output /dev/null --write-out '%{http_code}|%{url_effective}|%{remote_ip}' "$url" 2>&1)
+            result=$(curl --user-agent "$agent" --silent --show-error --location --max-redirs 8 --connect-timeout 15 --max-time 90 --output /dev/null --write-out '%{http_code}|%{content_type}|%{size_download}|%{url_effective}|%{remote_ip}' "$url" 2>&1)
             status=$?
             echo "$label: $url -> $result"
             if [ "$status" -ne 0 ]; then
@@ -132,16 +133,55 @@ jobs:
               *) failures=$((failures + 1)) ;;
             esac
           }
+
+          check_xml() {
+            local label="$1"
+            local url="$2"
+            local expected_root="$3"
+            local file
+            file=$(mktemp)
+            if ! curl --user-agent "Googlebot" --fail --silent --show-error --location --connect-timeout 15 --max-time 90 "$url" --output "$file"; then
+              echo "$label failed to fetch: $url"
+              failures=$((failures + 1))
+              rm -f "$file"
+              return
+            fi
+            local bytes
+            local count
+            bytes=$(wc -c < "$file")
+            count=$(grep -o "<loc>" "$file" | wc -l)
+            echo "$label: bytes=$bytes loc_entries=$count"
+            if ! grep -q "<$expected_root" "$file"; then
+              echo "$label missing <$expected_root> root"
+              failures=$((failures + 1))
+            fi
+            if [ "$bytes" -le 0 ] || [ "$count" -le 0 ]; then
+              failures=$((failures + 1))
+            fi
+            rm -f "$file"
+          }
+
+          echo "=== DNS resolution ==="
+          getent ahosts south-dakota.garagedoorgazette.com || true
+          getent ahosts sioux-falls-south-dakota.garagedoorgazette.com || true
+
           check_url "Workers.dev homepage" "https://garage-door-gazette.mch55873.workers.dev/"
           check_url "Apex homepage" "https://garagedoorgazette.com/"
+          check_url "Areas we serve" "https://garagedoorgazette.com/areas-we-serve/"
+          check_url "Individual service" "https://garagedoorgazette.com/services/broken-garage-door-spring-repair/"
+          check_url "About page" "https://garagedoorgazette.com/about/"
+          check_url "Contact page" "https://garagedoorgazette.com/contact/"
           check_url "State subdomain" "https://south-dakota.garagedoorgazette.com/"
           check_url "City subdomain" "https://sioux-falls-south-dakota.garagedoorgazette.com/"
           check_url "City service" "https://sioux-falls-south-dakota.garagedoorgazette.com/broken-garage-door-spring-repair/"
           check_url "Legacy state redirect" "https://garagedoorgazette.com/locations/south-dakota/"
-          check_url "Sitemap index" "https://garagedoorgazette.com/sitemap.xml"
-          check_url "Core sitemap" "https://garagedoorgazette.com/sitemaps/core.xml"
-          check_url "State sitemap shard" "https://garagedoorgazette.com/sitemaps/south-dakota-1.xml"
           check_url "WWW homepage" "https://www.garagedoorgazette.com/"
+
+          check_xml "Sitemap index as Googlebot" "https://garagedoorgazette.com/sitemap.xml" "sitemapindex"
+          check_xml "Core sitemap as Googlebot" "https://garagedoorgazette.com/sitemaps/core.xml" "urlset"
+          check_xml "Alabama sitemap as Googlebot" "https://garagedoorgazette.com/sitemaps/alabama-1.xml" "urlset"
+          check_xml "South Dakota sitemap as Googlebot" "https://garagedoorgazette.com/sitemaps/south-dakota-1.xml" "urlset"
+
           echo "Verification failures: $failures"
           test "$failures" -eq 0
 
