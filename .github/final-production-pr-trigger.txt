@@ -1,0 +1,1 @@
+Verify final design, state and city templates, and Googlebot sitemap fetches.
