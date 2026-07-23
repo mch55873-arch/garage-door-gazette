@@ -4,28 +4,38 @@ import { services } from "@/data/services";
 import { states } from "@/data/states";
 import { siteConfig } from "@/data/site";
 
+export const dynamic = "force-static";
+
+type CorePage = {
+  path: string;
+  priority: number;
+  changeFrequency: NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>;
+};
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date("2026-07-23T00:00:00Z");
 
-  const corePages: MetadataRoute.Sitemap = [
-    ["/", 1, "weekly"],
-    ["/services/", 0.95, "weekly"],
-    ["/locations/", 0.9, "weekly"],
-    ["/articles/", 0.9, "weekly"],
-    ["/about/", 0.6, "monthly"],
-    ["/contact/", 0.7, "monthly"],
-    ["/privacy-policy/", 0.3, "yearly"],
-    ["/terms/", 0.3, "yearly"],
-    ["/disclaimer/", 0.3, "yearly"],
-    ["/cookie-policy/", 0.3, "yearly"],
-    ["/editorial-policy/", 0.4, "yearly"],
-    ["/provider-disclosure/", 0.5, "yearly"],
-    ["/accessibility/", 0.3, "yearly"],
-  ].map(([path, priority, changeFrequency]) => ({
-    url: `${siteConfig.url}${path}`,
+  const corePageRows: CorePage[] = [
+    { path: "/", priority: 1, changeFrequency: "weekly" },
+    { path: "/services/", priority: 0.95, changeFrequency: "weekly" },
+    { path: "/locations/", priority: 0.9, changeFrequency: "weekly" },
+    { path: "/articles/", priority: 0.9, changeFrequency: "weekly" },
+    { path: "/about/", priority: 0.6, changeFrequency: "monthly" },
+    { path: "/contact/", priority: 0.7, changeFrequency: "monthly" },
+    { path: "/privacy-policy/", priority: 0.3, changeFrequency: "yearly" },
+    { path: "/terms/", priority: 0.3, changeFrequency: "yearly" },
+    { path: "/disclaimer/", priority: 0.3, changeFrequency: "yearly" },
+    { path: "/cookie-policy/", priority: 0.3, changeFrequency: "yearly" },
+    { path: "/editorial-policy/", priority: 0.4, changeFrequency: "yearly" },
+    { path: "/provider-disclosure/", priority: 0.5, changeFrequency: "yearly" },
+    { path: "/accessibility/", priority: 0.3, changeFrequency: "yearly" },
+  ];
+
+  const corePages: MetadataRoute.Sitemap = corePageRows.map((page) => ({
+    url: `${siteConfig.url}${page.path}`,
     lastModified,
-    changeFrequency: changeFrequency as MetadataRoute.Sitemap[number]["changeFrequency"],
-    priority: priority as number,
+    changeFrequency: page.changeFrequency,
+    priority: page.priority,
   }));
 
   const servicePages: MetadataRoute.Sitemap = services.map((service) => ({
