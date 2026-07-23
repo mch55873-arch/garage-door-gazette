@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
-    types:
-      - opened
-      - synchronize
-      - reopened
   workflow_dispatch:
 
 concurrency:
@@ -45,78 +38,39 @@ jobs:
         run: npm run build
 
       - name: Deploy to Cloudflare Workers
-        id: deploy
-        continue-on-error: true
         shell: bash
-        env:
-          WRANGLER_LOG: debug
         run: |
           set -o pipefail
           npx wrangler@latest deploy 2>&1 | tee wrangler-deploy.log
 
-      - name: Collect Wrangler debug logs
-        if: always()
-        shell: bash
-        run: |
-          mkdir -p wrangler-debug
-          cp -R "$HOME/.config/.wrangler/logs/." wrangler-debug/ 2>/dev/null || true
-
       - name: Verify production URLs
-        id: verify
-        if: steps.deploy.outcome == 'success'
-        continue-on-error: true
         shell: bash
         run: |
-          set -o pipefail
-          failures=0
-          {
-            echo "=== DNS resolution ==="
-            getent ahosts garagedoorgazette.com || true
-            getent ahosts www.garagedoorgazette.com || true
-            echo
-            check_url() {
-              local label="$1"
-              local url="$2"
-              local result
-              result=$(curl --silent --show-error --location --max-redirs 8 --connect-timeout 15 --max-time 45 --output /dev/null --write-out '%{http_code}|%{url_effective}|%{remote_ip}' "$url" 2>&1) || true
-              echo "$label: $url -> $result"
-              case "$result" in
-                200\|*) ;;
-                *) failures=$((failures + 1)) ;;
-              esac
-            }
-            check_url "Workers.dev homepage" "https://garage-door-gazette.mch55873.workers.dev/"
-            check_url "Apex homepage" "https://garagedoorgazette.com/"
-            check_url "Services" "https://garagedoorgazette.com/services/"
-            check_url "Locations" "https://garagedoorgazette.com/locations/"
-            check_url "Articles" "https://garagedoorgazette.com/articles/"
-            check_url "Sitemap" "https://garagedoorgazette.com/sitemap.xml"
-            check_url "WWW homepage" "https://www.garagedoorgazette.com/"
-            echo "Verification failures: $failures"
-          } 2>&1 | tee production-verification.log
-          test "$failures" -eq 0
+          set -euo pipefail
+          check_url() {
+            local label="$1"
+            local url="$2"
+            local result
+            result=$(curl --silent --show-error --location --max-redirs 8 --connect-timeout 15 --max-time 45 --output /dev/null --write-out '%{http_code}|%{url_effective}|%{remote_ip}' "$url")
+            echo "$label: $url -> $result"
+            case "$result" in
+              200\|*) ;;
+              *) exit 1 ;;
+            esac
+          }
+          check_url "Workers.dev homepage" "https://garage-door-gazette.mch55873.workers.dev/"
+          check_url "Apex homepage" "https://garagedoorgazette.com/"
+          check_url "Services" "https://garagedoorgazette.com/services/"
+          check_url "Locations" "https://garagedoorgazette.com/locations/"
+          check_url "Articles" "https://garagedoorgazette.com/articles/"
+          check_url "Sitemap" "https://garagedoorgazette.com/sitemap.xml"
+          check_url "WWW homepage" "https://www.garagedoorgazette.com/"
 
-      - name: Upload deployment diagnostics
-        if: always()
+      - name: Upload diagnostics on failure
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: cloudflare-deployment-log
-          path: |
-            wrangler-deploy.log
-            production-verification.log
-            wrangler-debug
+          path: wrangler-deploy.log
           if-no-files-found: ignore
           retention-days: 3
-
-      - name: Confirm deployment status
-        if: always()
-        shell: bash
-        env:
-          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
-          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
-        run: |
-          if [ "$DEPLOY_OUTCOME" != "success" ] || [ "$VERIFY_OUTCOME" != "success" ]; then
-            echo "Cloudflare deployment or production verification failed. Review cloudflare-deployment-log."
-            exit 1
-          fi
-          echo "Cloudflare deployment and production verification completed successfully."
