@@ -1,0 +1,1 @@
+Final verification after the proxied wildcard DNS record was added manually in Cloudflare.
