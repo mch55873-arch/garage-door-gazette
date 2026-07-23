@@ -48,9 +48,18 @@ jobs:
         id: deploy
         continue-on-error: true
         shell: bash
+        env:
+          WRANGLER_LOG: debug
         run: |
           set -o pipefail
           npx wrangler@latest deploy 2>&1 | tee wrangler-deploy.log
+
+      - name: Collect Wrangler debug logs
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p wrangler-debug
+          cp -R "$HOME/.config/.wrangler/logs/." wrangler-debug/ 2>/dev/null || true
 
       - name: Verify production URLs
         if: steps.deploy.outcome == 'success'
@@ -76,7 +85,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cloudflare-deployment-log
-          path: wrangler-deploy.log
+          path: |
+            wrangler-deploy.log
+            wrangler-debug
           if-no-files-found: ignore
           retention-days: 3
 
