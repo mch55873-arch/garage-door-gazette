@@ -4,10 +4,11 @@ export const siteConfig = {
   url: "https://garagedoorgazette.com",
   description:
     "Research garage door problems, compare repair and installation services, browse locations, and check local provider availability across the United States.",
-  phoneDisplay: process.env.NEXT_PUBLIC_PHONE_LABEL || "Check Local Availability",
+  phoneDisplay: process.env.NEXT_PUBLIC_PHONE_LABEL || "Call (773) 249-5939",
+  phoneNumber: process.env.NEXT_PUBLIC_PHONE_NUMBER || "+17732495939",
   phoneHref: process.env.NEXT_PUBLIC_PHONE_NUMBER
     ? `tel:${process.env.NEXT_PUBLIC_PHONE_NUMBER}`
-    : "/contact/",
+    : "tel:+17732495939",
 };
 
 export const siteImages = {
