@@ -1,1 +1,1 @@
-Verify wildcard state, city, local-service and sitemap architecture.
+Verify wildcard state, city, local-service and sitemap architecture after wildcard DNS was added.
