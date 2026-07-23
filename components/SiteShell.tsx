@@ -2,7 +2,6 @@ import { services } from "@/data/services";
 import { siteConfig } from "@/data/site";
 
 export function SiteHeader() {
-  const featured = services.slice(0, 8);
   return (
     <>
       <div className="topbar">
@@ -24,6 +23,7 @@ export function SiteHeader() {
             <a href="/">Home</a>
             <a href="/services/">Services</a>
             <a href="/locations/">Locations</a>
+            <a href="/articles/">Guides</a>
             <a href="/about/">About</a>
             <a href="/contact/">Contact</a>
           </nav>
@@ -31,9 +31,10 @@ export function SiteHeader() {
         </div>
       </header>
       <div className="mobile" style={{ borderBottom: "1px solid #dfe6ee", background: "#fff" }}>
-        <div className="container" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, padding: "10px 0" }}>
+        <div className="container" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8, padding: "10px 0" }}>
           <a href="/services/" style={{ textAlign: "center", fontWeight: 900, fontSize: 13 }}>Services</a>
           <a href="/locations/" style={{ textAlign: "center", fontWeight: 900, fontSize: 13 }}>Locations</a>
+          <a href="/articles/" style={{ textAlign: "center", fontWeight: 900, fontSize: 13 }}>Guides</a>
           <a href="/contact/" style={{ textAlign: "center", fontWeight: 900, fontSize: 13 }}>Contact</a>
         </div>
       </div>
@@ -60,6 +61,7 @@ export function SiteFooter() {
           <a href="/about/">About</a>
           <a href="/services/">All {services.length} Services</a>
           <a href="/locations/">States & Locations</a>
+          <a href="/articles/">Garage Door Guides</a>
           <a href="/contact/">Check Availability</a>
         </div>
         <div>
@@ -73,8 +75,10 @@ export function SiteFooter() {
           <a href="/privacy-policy/">Privacy Policy</a>
           <a href="/terms/">Terms & Conditions</a>
           <a href="/disclaimer/">Disclaimer</a>
+          <a href="/cookie-policy/">Cookie Policy</a>
           <a href="/provider-disclosure/">Provider Disclosure</a>
           <a href="/editorial-policy/">Editorial Policy</a>
+          <a href="/accessibility/">Accessibility</a>
         </div>
       </div>
       <div className="container footer-bottom">
