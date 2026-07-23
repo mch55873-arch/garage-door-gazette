@@ -1,0 +1,1 @@
+Verify wildcard state, city, local-service and sitemap architecture.
