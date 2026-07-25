@@ -21,6 +21,13 @@ const CORE_PATHS = [
   "/accessibility/",
 ];
 
+export function getStateSlug(state: any): string {
+  if (state.slug) return state.slug.toLowerCase();
+  if (state.name) return state.name.toLowerCase().replace(/\s+/g, '-');
+  if (state.code) return state.code.toLowerCase();
+  return '';
+}
+
 function xml(value: string) {
   return value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char] || char);
 }
@@ -43,9 +50,10 @@ function xmlResponse(body: string, method = "GET") {
 export function sitemapIndex(states: StateRow[], method = "GET") {
   const entries = [`https://${DOMAIN}/sitemaps/core.xml`];
   for (const state of states) {
+    const slug = getStateSlug(state);
     const chunks = Math.ceil((state.cities.length * URLS_PER_CITY) / SITEMAP_LIMIT);
     for (let chunk = 1; chunk <= chunks; chunk++) {
-      entries.push(`https://${DOMAIN}/sitemaps/${state.slug}-${chunk}.xml`);
+      entries.push(`https://${DOMAIN}/sitemaps/${slug}-${chunk}.xml`);
     }
   }
   const body = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.map((loc) => `  <sitemap><loc>${xml(loc)}</loc></sitemap>`).join("\n")}\n</sitemapindex>`;
@@ -57,13 +65,14 @@ export function coreSitemap(states: StateRow[], method = "GET") {
     ...CORE_PATHS.map((path) => `https://${DOMAIN}${path}`),
     ...services.map((service) => `https://${DOMAIN}/services/${service.slug}/`),
     ...articles.map((article) => `https://${DOMAIN}/articles/${article.slug}/`),
-    ...states.map((state) => `https://${state.slug}.${DOMAIN}/`),
+    ...states.map((state) => `https://${getStateSlug(state)}.${DOMAIN}/`),
   ];
   return sitemapUrlset(urls, method);
 }
 
 export function stateSitemap(state: StateRow, chunk: number, method = "GET") {
   if (!Number.isInteger(chunk) || chunk < 1) return null;
+  const slug = getStateSlug(state);
   const start = (chunk - 1) * SITEMAP_LIMIT;
   const total = state.cities.length * URLS_PER_CITY;
   if (start >= total) return null;
@@ -72,8 +81,9 @@ export function stateSitemap(state: StateRow, chunk: number, method = "GET") {
   for (let index = start; index < end; index++) {
     const cityIndex = Math.floor(index / URLS_PER_CITY);
     const pageIndex = index % URLS_PER_CITY;
-    const [citySlug] = state.cities[cityIndex];
-    const host = `${citySlug}-${state.slug}.${DOMAIN}`;
+    const cityObj = state.cities[cityIndex];
+    const citySlug = Array.isArray(cityObj) ? cityObj[0] : (cityObj as any).slug;
+    const host = `${citySlug}-${slug}.${DOMAIN}`;
     urls.push(pageIndex === 0 ? `https://${host}/` : `https://${host}/${services[pageIndex - 1].slug}/`);
   }
   return sitemapUrlset(urls, method);

@@ -1,16 +1,51 @@
-import locationDatabase from "../data/usa_locations.json";
+import { articles } from "../data/articles";
 import { services } from "../data/services";
-import { cityPage, localServicePage, notFoundPage, statePage, type StateRow } from "./locationTemplates";
+import usaLocations from "../data/usa_locations.json";
+import {
+  areasWeServePage,
+  articlePage,
+  articlesHubPage,
+  cityPage,
+  homePage,
+  infoPage,
+  localServicePage,
+  nationalServicePage,
+  notFoundPage,
+  servicesHubPage,
+  statePage,
+  type StateRow,
+} from "./locationTemplates";
 import { coreSitemap, sitemapIndex, stateSitemap } from "./sitemaps";
 
 type Env = { ASSETS: { fetch(input: Request | string): Promise<Response> } };
-type Ctx = { waitUntil(promise: Promise<unknown>): void };
-type LocationDatabase = { states: StateRow[] };
+type Context = { waitUntil(promise: Promise<unknown>): void };
 
 const DOMAIN = "garagedoorgazette.com";
-const DB = locationDatabase as LocationDatabase;
-const STATE_BY_SLUG = new Map(DB.states.map((state) => [state.slug, state]));
-const STATE_SLUGS = DB.states.map((state) => state.slug).sort((a, b) => b.length - a.length);
+const rawStates = (usaLocations as any).states || [];
+
+function getStateSlug(state: any): string {
+  if (state.slug) return state.slug.toLowerCase();
+  if (state.name) return state.name.toLowerCase().replace(/\s+/g, '-');
+  if (state.code) return state.code.toLowerCase();
+  return '';
+}
+
+const states: StateRow[] = rawStates.map((s: any) => {
+  const slug = getStateSlug(s);
+  const cities: [string, string][] = (s.cities || []).map((c: any) => {
+    if (Array.isArray(c)) return [c[0], c[1]];
+    return [c.slug || c.name.toLowerCase().replace(/\s+/g, '-'), c.name];
+  });
+  return {
+    code: s.code || slug,
+    name: s.name,
+    slug,
+    cities,
+  };
+});
+
+const STATE_BY_SLUG = new Map(states.map((state) => [state.slug, state]));
+const STATE_SLUGS = states.map((state) => state.slug).sort((a, b) => b.length - a.length);
 
 function parseSubdomain(subdomain: string) {
   const directState = STATE_BY_SLUG.get(subdomain);
@@ -45,7 +80,7 @@ function redirect(url: string, status = 308) {
   return Response.redirect(url, status);
 }
 
-async function cached(request: Request, ctx: Ctx, render: () => Response) {
+async function cached(request: Request, ctx: Context, render: () => Response) {
   if (request.method === "HEAD") return render();
   const cache = (caches as CacheStorage & { default: Cache }).default;
   const hit = await cache.match(request);
@@ -56,7 +91,7 @@ async function cached(request: Request, ctx: Ctx, render: () => Response) {
 }
 
 export default {
-  async fetch(request: Request, env: Env, ctx: Ctx): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: Context): Promise<Response> {
     if (!["GET", "HEAD"].includes(request.method)) return new Response("Method Not Allowed", { status: 405 });
 
     const url = new URL(request.url);
@@ -70,6 +105,10 @@ export default {
     }
 
     if (hostname === DOMAIN || hostname.endsWith(".workers.dev")) {
+      if (path === "/" || path === "") {
+        return cached(request, ctx, () => htmlResponse(homePage(states), method));
+      }
+
       if (path === "/robots.txt") {
         const body = `User-agent: *\nAllow: /\nSitemap: https://${DOMAIN}/sitemap.xml\n`;
         return new Response(method === "HEAD" ? null : body, {
@@ -80,8 +119,8 @@ export default {
           },
         });
       }
-      if (path === "/sitemap.xml") return cached(request, ctx, () => sitemapIndex(DB.states, method));
-      if (path === "/sitemaps/core.xml") return cached(request, ctx, () => coreSitemap(DB.states, method));
+      if (path === "/sitemap.xml") return cached(request, ctx, () => sitemapIndex(states, method));
+      if (path === "/sitemaps/core.xml") return cached(request, ctx, () => coreSitemap(states, method));
 
       const sitemapMatch = path.match(/^\/sitemaps\/(.+)-(\d+)\.xml$/);
       if (sitemapMatch) {
@@ -92,12 +131,58 @@ export default {
         return cached(request, ctx, () => res);
       }
 
-      if (path === "/locations" || path === "/locations/") {
-        return redirect(`https://${DOMAIN}/areas-we-serve/`);
+      if (path === "/services" || path === "/services/") {
+        return cached(request, ctx, () => htmlResponse(servicesHubPage(), method));
+      }
+
+      if (path.startsWith("/services/")) {
+        const slug = path.split("/")[2];
+        const service = services.find((s) => s.slug === slug);
+        if (service) {
+          return cached(request, ctx, () => htmlResponse(nationalServicePage(service), method));
+        }
+      }
+
+      if (path === "/areas-we-serve" || path === "/areas-we-serve/" || path === "/locations" || path === "/locations/") {
+        return cached(request, ctx, () => htmlResponse(areasWeServePage(states), method));
+      }
+
+      if (path === "/articles" || path === "/articles/") {
+        return cached(request, ctx, () => htmlResponse(articlesHubPage(), method));
+      }
+
+      if (path.startsWith("/articles/")) {
+        const slug = path.split("/")[2];
+        const article = articles.find((a) => a.slug === slug);
+        if (article) {
+          return cached(request, ctx, () => htmlResponse(articlePage(article), method));
+        }
+      }
+
+      const infoPages: Record<string, string> = {
+        "/about": "About Garage Door Gazette",
+        "/about/": "About Garage Door Gazette",
+        "/contact": "Contact Us",
+        "/contact/": "Contact Us",
+        "/privacy-policy": "Privacy Policy",
+        "/privacy-policy/": "Privacy Policy",
+        "/terms": "Terms of Service",
+        "/terms/": "Terms of Service",
+        "/provider-disclosure": "Provider Disclosure",
+        "/provider-disclosure/": "Provider Disclosure",
+        "/accessibility": "Accessibility Statement",
+        "/accessibility/": "Accessibility Statement",
+      };
+
+      if (infoPages[path]) {
+        const title = infoPages[path];
+        const content = `<p>Welcome to ${title} on Garage Door Gazette. We provide independent garage door research, local service routing, and information across all 50 US states.</p><p>For inquiries, call <strong>+1 (773) 249-5939</strong>.</p>`;
+        return cached(request, ctx, () => htmlResponse(infoPage(title, content, path), method));
       }
 
       const parts = path.split("/").filter(Boolean);
       const locationPrefix = parts[0] === "locations" || parts[0] === "areas-we-serve";
+
       if (locationPrefix && parts[1] && STATE_BY_SLUG.has(parts[1])) {
         const state = STATE_BY_SLUG.get(parts[1])!;
         const citySlug = parts[2];
@@ -147,11 +232,6 @@ export default {
     if (!location.city) {
       if (path !== "/") return redirect(`https://${hostname}/`);
       return cached(request, ctx, () => htmlResponse(statePage(location.state, hostname), method));
-    }
-
-    if (path !== "/" && !path.endsWith("/")) {
-      url.pathname = `${path}/`;
-      return redirect(url.toString());
     }
 
     const routeParts = path.split("/").filter(Boolean);
