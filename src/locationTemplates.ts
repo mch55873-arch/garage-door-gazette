@@ -35,7 +35,25 @@ function serviceCards(host: string, local: boolean) {
 export function statePage(state: StateRow, host: string) {
   const cityLinks = state.cities.map(([slug, name]) => `<a href="https://${slug}-${state.slug}.${DOMAIN}/"><span>${esc(name)}</span></a>`).join("");
   const canonical = `https://${host}/`;
-  const schema = { "@context": "https://schema.org", "@graph": [{ "@type": "CollectionPage", name: `Garage Door Services in ${state.name}`, url: canonical, about: { "@type": "State", name: state.name }, isPartOf: { "@type": "WebSite", name: "Garage Door Gazette", url: `https://${DOMAIN}/` } }, { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Areas We Serve", item: `https://${DOMAIN}/areas-we-serve/` }, { "@type": "ListItem", position: 2, name: state.name, item: canonical }] }] };
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        name: `Garage Door Services in ${state.name}`,
+        url: canonical,
+        about: { "@type": "State", name: state.name },
+        isPartOf: { "@type": "WebSite", name: "Garage Door Gazette", url: `https://${DOMAIN}/` }
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Areas We Serve", item: `https://${DOMAIN}/areas-we-serve/` },
+          { "@type": "ListItem", position: 2, name: state.name, item: canonical }
+        ]
+      }
+    ]
+  };
   const body = `<main><section class="hero"><div class="wrap hero-grid"><div><div class="crumb"><a href="https://${DOMAIN}/">Home</a> / <a href="https://${DOMAIN}/areas-we-serve/">Areas We Serve</a> / ${esc(state.name)}</div><span class="eyebrow">${state.code.toUpperCase()} garage door directory</span><h1>Garage door services across <em>${esc(state.name)}</em></h1><p>Choose a city or community, review the complete ${services.length}-service directory and prepare the information needed to confirm independent-provider coverage, diagnosis, scope, price and warranty.</p><div class="buttons"><a class="btn" href="#cities">Browse ${state.cities.length.toLocaleString()} Cities</a><a class="btn ghost" href="#services">View All Services</a></div><div class="badges"><span class="badge">Independent providers</span><span class="badge">City-specific routes</span><span class="badge">No fabricated local offices</span></div></div><div class="hero-photo"><img src="${IMAGES.state}" alt="Residential streets and properties in a service area" width="800" height="620"></div></div></section><section class="stats"><div class="wrap"><div class="stat"><strong>${services.length}</strong><span>Service topics</span></div><div class="stat"><strong>${state.cities.length.toLocaleString()}</strong><span>Cities & communities</span></div><div class="stat"><strong>${state.code.toUpperCase()}</strong><span>State directory</span></div><div class="stat"><strong>Direct</strong><span>Provider verification</span></div></div></section><section class="section soft" id="cities"><div class="wrap"><div class="head"><div><span class="eyeline">Areas we serve</span><h2>Garage door service locations in ${esc(state.name)}</h2><p class="muted">Select a city to open its local service hub. Geographic pages organize information; they do not claim that one contractor maintains an office or credential in every listed community.</p></div></div><div class="directory">${cityLinks}</div></div></section><section class="section" id="services"><div class="wrap"><div class="head"><div><span class="eyeline">Complete service directory</span><h2>All ${services.length} garage door services</h2><p class="muted">Review repair, opener, spring, cable, track, panel, weatherproofing, installation, maintenance and commercial topics.</p></div><a class="btn dark" href="https://${DOMAIN}/services/">National Service Hub</a></div><div class="grid">${serviceCards(host, false)}</div></div></section><section class="section blue"><div class="wrap"><div class="head"><div><span class="eyeline">A clearer hiring process</span><h2>From symptom to written scope</h2></div></div><div class="process"><div class="step"><b>01</b><h3>Choose a city</h3><p>Open the location route matching the property city or nearby community.</p></div><div class="step"><b>02</b><h3>Select the issue</h3><p>Start with the spring, opener, track, cable, panel, seal or installation need.</p></div><div class="step"><b>03</b><h3>Request diagnosis</h3><p>Ask for property-specific findings rather than relying only on a phone description.</p></div><div class="step"><b>04</b><h3>Verify terms</h3><p>Confirm identity, credentials, insurance, scope, total price and warranty.</p></div></div><div class="notice" style="margin-top:28px"><strong>Provider disclosure:</strong> Coverage, scheduling, credentials, service scope, parts, pricing and warranties vary by independent provider.</div></div></section></main>`;
   return shell(`Garage Door Repair Services in ${state.name}`, `Browse ${services.length} garage door services and ${state.cities.length} city routes in ${state.name}.`, canonical, body, schema);
 }
@@ -43,7 +61,56 @@ export function statePage(state: StateRow, host: string) {
 export function cityPage(state: StateRow, city: [string, string], host: string) {
   const [, cityName] = city;
   const canonical = `https://${host}/`;
-  const schema = { "@context": "https://schema.org", "@graph": [{ "@type": "CollectionPage", name: `Garage Door Services in ${cityName}, ${state.name}`, url: canonical, about: { "@type": "City", name: cityName, containedInPlace: { "@type": "State", name: state.name } }, isPartOf: { "@type": "WebSite", name: "Garage Door Gazette", url: `https://${DOMAIN}/` } }, { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: state.name, item: `https://${state.slug}.${DOMAIN}/` }, { "@type": "ListItem", position: 2, name: cityName, item: canonical }] }] };
+
+  const offerCatalog = {
+    "@type": "OfferCatalog",
+    name: `Garage Door Repair & Installation Services in ${cityName}, ${state.name}`,
+    itemListElement: services.map((s) => ({
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: `${s.title} in ${cityName}`,
+        description: s.summary,
+        url: `https://${host}/${s.slug}/`
+      }
+    }))
+  };
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "HomeAndConstructionBusiness",
+        "@id": `${canonical}#business`,
+        name: `Garage Door Gazette ${cityName}`,
+        url: canonical,
+        telephone: "+17732495939",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: cityName,
+          addressRegion: state.code.toUpperCase(),
+          addressCountry: "US"
+        },
+        priceRange: "$$",
+        hasOfferCatalog: offerCatalog
+      },
+      {
+        "@type": "CollectionPage",
+        name: `Garage Door Services in ${cityName}, ${state.name}`,
+        url: canonical,
+        about: { "@type": "City", name: cityName, containedInPlace: { "@type": "State", name: state.name } },
+        isPartOf: { "@type": "WebSite", name: "Garage Door Gazette", url: `https://${DOMAIN}/` }
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: state.name, item: `https://${state.slug}.${DOMAIN}/` },
+          { "@type": "ListItem", position: 2, name: cityName, item: canonical }
+        ]
+      }
+    ]
+  };
+
   const body = `<main><section class="hero"><div class="wrap hero-grid"><div><div class="crumb"><a href="https://${DOMAIN}/areas-we-serve/">Areas We Serve</a> / <a href="https://${state.slug}.${DOMAIN}/">${esc(state.name)}</a> / ${esc(cityName)}</div><span class="eyebrow">Local garage door service guide</span><h1>Garage door repair in <em>${esc(cityName)}, ${esc(state.name)}</em></h1><p>Explore the complete ${services.length}-service directory for ${esc(cityName)}. Use the page to identify the relevant component, understand common warning signs and prepare for a direct conversation with an independent provider.</p><div class="buttons"><a class="btn" href="tel:+17732495939">Call (773) 249-5939</a><a class="btn ghost" href="#services">Browse All Services</a></div><div class="badges"><span class="badge">Location-specific guide</span><span class="badge">Safety-conscious information</span><span class="badge">Written-scope checklist</span></div></div><div class="hero-photo"><img src="${IMAGES.city}" alt="Garage door at a residential property" width="800" height="620"></div></div></section><section class="stats"><div class="wrap"><div class="stat"><strong>${services.length}</strong><span>Local service topics</span></div><div class="stat"><strong>${state.code.toUpperCase()}</strong><span>${esc(state.name)}</span></div><div class="stat"><strong>City</strong><span>${esc(cityName)}</span></div><div class="stat"><strong>Verify</strong><span>Scope and price</span></div></div></section><section class="section soft" id="services"><div class="wrap"><div class="head"><div><span class="eyeline">Garage door services</span><h2>Services to review in ${esc(cityName)}</h2><p class="muted">Select the exact symptom, component or project for detailed inspection guidance, repair considerations and provider questions.</p></div></div><div class="grid">${serviceCards(host, true)}</div></div></section><section class="section"><div class="wrap content"><article class="article"><span class="eyeline">Before requesting service</span><h2>Describe the condition precisely</h2><ul><li>Whether the door is open, closed, stuck, crooked, noisy, off track, heavy or unsecured.</li><li>Visible damage to springs, cables, drums, rollers, tracks, hinges, panels, seals, sensors or opener controls.</li><li>Property ZIP code, residential or commercial use, door size and material, and opener brand when known.</li><li>Any immediate safety, security, weather, vehicle-access or business-continuity concern.</li></ul><h2>What a responsible inspection should cover</h2><p>The provider should evaluate door balance, travel, alignment, structural condition, counterbalance hardware, tracks, rollers, hinges, opener components and safety reversal. The recommended scope should connect directly to visible findings.</p><h2>Confirm the provider before authorizing work</h2><p>Ask for the legal business identity, applicable credentials, insurance, diagnosis, parts, labor, service-call charges, taxes, permits, disposal, total price, exclusions, completion expectations and written warranty.</p><h2>Garage door safety</h2><p>Do not force a heavy, unsupported, off-track or uneven door. Springs, cables, drums and bottom brackets can store dangerous force. Keep people, pets and vehicles away until the system is stabilized and evaluated.</p><div class="faq"><details><summary>Does this page represent a local garage door company?</summary><p>No. Garage Door Gazette is an information and referral platform. The actual provider must be identified and evaluated directly.</p></details><details><summary>Are prices or response times guaranteed?</summary><p>No. Pricing, availability, response time, parts and service scope vary by provider and property condition.</p></details><details><summary>Should I operate a door with a broken spring or cable?</summary><p>Avoid operating or forcing an unstable door. Keep the area clear and obtain qualified assistance.</p></details></div></article><aside class="side"><span class="eyebrow">${esc(cityName)} coverage</span><h2>Prepare a clear service request</h2><p>Confirm ZIP-code coverage, scheduling, credentials, diagnosis, written scope, total price and warranty directly with the independent provider.</p><a class="btn" href="tel:+17732495939">Call (773) 249-5939</a><a class="more" href="https://${state.slug}.${DOMAIN}/">Browse ${esc(state.name)} cities →</a><a class="more" href="https://${DOMAIN}/provider-disclosure/">Provider disclosure →</a></aside></div></section></main>`;
   return shell(`Garage Door Repair in ${cityName}, ${state.name}`, `Browse ${services.length} garage door repair and installation service topics for ${cityName}, ${state.name}.`, canonical, body, schema);
 }
@@ -52,7 +119,59 @@ export function localServicePage(state: StateRow, city: [string, string], servic
   const [, cityName] = city;
   const canonical = `https://${host}/${service.slug}/`;
   const related = services.filter((item) => item.category === service.category && item.slug !== service.slug).slice(0, 6);
-  const schema = { "@context": "https://schema.org", "@graph": [{ "@type": "Service", name: `${service.title} in ${cityName}, ${state.name}`, serviceType: service.category, description: service.summary, url: canonical, areaServed: { "@type": "City", name: cityName, containedInPlace: { "@type": "State", name: state.name } }, provider: { "@type": "Organization", name: "Garage Door Gazette", url: `https://${DOMAIN}/` } }, { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: state.name, item: `https://${state.slug}.${DOMAIN}/` }, { "@type": "ListItem", position: 2, name: cityName, item: `https://${host}/` }, { "@type": "ListItem", position: 3, name: service.title, item: canonical }] }] };
+
+  const offerCatalog = {
+    "@type": "OfferCatalog",
+    name: `Garage Door Repair & Installation Services in ${cityName}, ${state.name}`,
+    itemListElement: services.map((s) => ({
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: `${s.title} in ${cityName}`,
+        description: s.summary,
+        url: `https://${host}/${s.slug}/`
+      }
+    }))
+  };
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "HomeAndConstructionBusiness",
+        "@id": `https://${host}/#business`,
+        name: `Garage Door Gazette ${cityName}`,
+        url: `https://${host}/`,
+        telephone: "+17732495939",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: cityName,
+          addressRegion: state.code.toUpperCase(),
+          addressCountry: "US"
+        },
+        priceRange: "$$",
+        hasOfferCatalog: offerCatalog
+      },
+      {
+        "@type": "Service",
+        name: `${service.title} in ${cityName}, ${state.name}`,
+        serviceType: service.category,
+        description: service.summary,
+        url: canonical,
+        areaServed: { "@type": "City", name: cityName, containedInPlace: { "@type": "State", name: state.name } },
+        provider: { "@type": "Organization", name: "Garage Door Gazette", url: `https://${DOMAIN}/` }
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: state.name, item: `https://${state.slug}.${DOMAIN}/` },
+          { "@type": "ListItem", position: 2, name: cityName, item: `https://${host}/` },
+          { "@type": "ListItem", position: 3, name: service.title, item: canonical }
+        ]
+      }
+    ]
+  };
+
   const body = `<main><section class="hero"><div class="wrap hero-grid"><div><div class="crumb"><a href="https://${state.slug}.${DOMAIN}/">${esc(state.name)}</a> / <a href="https://${host}/">${esc(cityName)}</a> / ${esc(service.title)}</div><span class="eyebrow">${esc(service.category)}</span><h1>${esc(service.title)} in <em>${esc(cityName)}, ${esc(state.name)}</em></h1><p>${esc(service.summary)} Review warning signs, likely inspection steps, repair-versus-replacement considerations and the questions to confirm before authorizing work.</p><div class="buttons"><a class="btn" href="tel:+17732495939">Call (773) 249-5939</a><a class="btn ghost" href="https://${host}/">All ${services.length} City Services</a></div></div><div class="hero-photo"><img src="${IMAGES.service}" alt="Garage door service and repair information" width="800" height="620"></div></div></section><section class="section soft"><div class="wrap"><div class="head"><div><span class="eyeline">What to expect</span><h2>A diagnosis-first service process</h2></div></div><div class="process"><div class="step"><b>01</b><h3>Describe the symptom</h3><p>Share the door position, sounds, movement, visible damage and security concern.</p></div><div class="step"><b>02</b><h3>Inspect the full system</h3><p>Balance, travel, tracks, rollers, hardware, opener and safety controls should be evaluated.</p></div><div class="step"><b>03</b><h3>Compare options</h3><p>Review repair, replacement, compatibility, parts availability and related wear.</p></div><div class="step"><b>04</b><h3>Approve in writing</h3><p>Confirm parts, labor, fees, exclusions, total price and warranty before work begins.</p></div></div></div></section><section class="section"><div class="wrap content"><article class="article"><span class="eyeline">Service overview</span><h2>Start with an accurate diagnosis</h2><p>A professional recommendation should connect the proposed work to visible findings. Because the door, counterbalance system, tracks, cables and opener work together, the most obvious symptom is not always the root cause.</p><h2>Common warning signs</h2><ul><li>The door is heavy, uneven, stuck, jerking, scraping or producing a new mechanical sound.</li><li>The opener strains, hums, reverses, stops or operates inconsistently.</li><li>Springs, cables, rollers, tracks, hinges, panels, seals, sensors or controls show visible damage.</li><li>The opening cannot be secured or creates an immediate safety, access or weather concern.</li></ul><h2>What a service visit should evaluate</h2><ul><li>Door balance, travel, alignment and structural condition.</li><li>Springs, cables, drums, bearings, brackets, rollers, tracks and hinges.</li><li>Opener rail, trolley, drive system, controls, sensors and safety reversal.</li><li>Correct part specifications, compatibility, installation requirements and manufacturer guidance.</li></ul><h2>Repair and replacement considerations</h2><p>Repair may be practical when the affected component is available, compatible and the rest of the system remains serviceable. Wider replacement may be more appropriate when damage is extensive, parts are obsolete, failures recur or several components are near the end of their service life.</p><h2>Questions to ask before approving work</h2><ul><li>What failed, and what evidence supports the diagnosis?</li><li>Does the estimate include parts, labor, service-call charges, taxes, disposal and testing?</li><li>Are there alternative repair or replacement options?</li><li>What parts, workmanship and manufacturer warranties apply?</li><li>Will the door be balanced and safety-tested afterward?</li><li>Is the provider currently licensed and insured where required?</li></ul><h2>Safety note</h2><p>Do not loosen loaded springs, cables, drums or bottom brackets. Do not stand beneath an unstable door or continue operating a system that is off track, unsupported or moving unevenly.</p><div class="faq"><details><summary>How much does ${esc(service.title.toLowerCase())} cost?</summary><p>Cost depends on location, door size and weight, component type, access, urgency, parts availability and related damage. Request a written total estimate.</p></details><details><summary>Is service availability guaranteed in ${esc(cityName)}?</summary><p>No. Current coverage, scheduling and parts availability must be confirmed directly with the independent provider.</p></details><details><summary>Can I repair the system myself?</summary><p>Garage doors are heavy and counterbalance hardware can store substantial force. Avoid unsafe work and obtain qualified assistance when appropriate.</p></details></div></article><aside class="side"><span class="eyebrow">Check local availability</span><h2>${esc(service.title)}</h2><p>${esc(cityName)}, ${esc(state.name)}</p><p>Confirm coverage, credentials, inspection scope, pricing and warranty terms directly.</p><a class="btn" href="tel:+17732495939">Call (773) 249-5939</a><h3>Related services</h3>${related.map((item) => `<a class="more" href="https://${host}/${item.slug}/">${esc(item.title)} →</a>`).join("")}</aside></div></section><section class="section blue"><div class="wrap"><div class="notice"><strong>Important:</strong> Garage Door Gazette is an information and referral platform, not the contractor performing the work. Confirm the actual provider and every material service term directly.</div></div></section></main>`;
   return shell(`${service.title} in ${cityName}, ${state.name}`, `${service.summary} Review local service information for ${cityName}, ${state.name}.`, canonical, body, schema);
 }
