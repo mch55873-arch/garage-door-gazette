@@ -839,6 +839,12 @@ export function disclaimerPage() {
   return shell(`Service Disclaimer | ${BRAND}`, "Service Disclaimer.", canonical, body);
 }
 
+export function infoPage(title: string, content: string, path: string) {
+  const canonical = `https://${DOMAIN}${path}`;
+  const body = `<main><section class="page-hero"><div class="wrap"><h1>${esc(title)}</h1></div></section><section class="sec-white" style="padding:70px 0;"><div class="wrap"><p style="font-size:16px;line-height:1.75;color:#334155;">${esc(content)}</p></div></section></main>`;
+  return shell(`${title} | ${BRAND}`, title, canonical, body);
+}
+
 export function notFoundPage(message: string) {
   return `<!doctype html><html><head><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1"><title>404 | ${BRAND}</title><style>${CSS}</style></head><body>${header()}<main class="sec-dark"><div class="wrap"><h1>404</h1><p>${esc(message)}</p><a class="btn-cta" href="https://${DOMAIN}/">Back to Home</a></div></main>${footer()}</body></html>`;
 }
