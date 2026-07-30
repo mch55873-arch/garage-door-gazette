@@ -155,25 +155,24 @@ export default {
         }
       }
 
-      const infoPages: Record<string, string> = {
-        "/about": "About Garage Door Gazette",
-        "/about/": "About Garage Door Gazette",
-        "/contact": "Contact Us",
-        "/contact/": "Contact Us",
-        "/privacy-policy": "Privacy Policy",
-        "/privacy-policy/": "Privacy Policy",
-        "/terms": "Terms of Service",
-        "/terms/": "Terms of Service",
-        "/provider-disclosure": "Provider Disclosure",
-        "/provider-disclosure/": "Provider Disclosure",
-        "/accessibility": "Accessibility Statement",
-        "/accessibility/": "Accessibility Statement",
-      };
+      if (path === "/about" || path === "/about/") {
+        return cached(request, ctx, () => htmlResponse(aboutUsPage(), method));
+      }
 
-      if (infoPages[path]) {
-        const title = infoPages[path];
-        const content = `<p>Welcome to ${title} on Garage Door Gazette. We provide independent garage door research, local service routing, and information across all 50 US states.</p><p>For inquiries, call <strong>+1 (773) 249-5939</strong>.</p>`;
-        return cached(request, ctx, () => htmlResponse(infoPage(title, content, path), method));
+      if (path === "/contact" || path === "/contact/") {
+        return cached(request, ctx, () => htmlResponse(contactUsPage(), method));
+      }
+
+      if (path === "/privacy-policy" || path === "/privacy-policy/") {
+        return cached(request, ctx, () => htmlResponse(privacyPolicyPage(), method));
+      }
+
+      if (path === "/terms" || path === "/terms/" || path === "/terms-of-service" || path === "/terms-of-service/") {
+        return cached(request, ctx, () => htmlResponse(termsOfServicePage(), method));
+      }
+
+      if (path === "/disclaimer" || path === "/disclaimer/") {
+        return cached(request, ctx, () => htmlResponse(disclaimerPage(), method));
       }
 
       const parts = path.split("/").filter(Boolean);
