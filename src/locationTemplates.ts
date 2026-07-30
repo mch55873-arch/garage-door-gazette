@@ -34,39 +34,39 @@ a{color:inherit;text-decoration:none}
 .top-left,.top-right{display:flex;align-items:center;gap:14px}
 .pulse-dot{width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block;box-shadow:0 0 10px #10b981}
 .sep{color:#475569}
-.stars{color:#fbbf24;letter-spacing:2px;font-size:14px}
+.stars{color:#38bdf8;letter-spacing:2px;font-size:14px}
 
 .navbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.98);backdrop-filter:blur(16px);border-bottom:1px solid #e2e8f0;box-shadow:0 8px 30px rgba(0,0,0,.08);color:#0f172a}
 .navbar .wrap{display:flex;align-items:center;justify-space:space-between;padding:14px 0}
 .brand{display:flex;align-items:center;gap:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:900;color:#0d1b2a;letter-spacing:-.03em}
-.logo-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#d97706,#b45309);color:#fff;font-size:22px;box-shadow:0 8px 20px rgba(217,119,6,.3)}
+.logo-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;font-size:22px;box-shadow:0 8px 20px rgba(217,119,6,.3)}
 .brand-sub{display:block;font-size:11px;letter-spacing:.02em;color:#64748b;font-family:'Inter',sans-serif;font-weight:500;margin-top:-2px}
 
 .nav-links{display:flex;align-items:center;gap:14px;font-size:14px;font-weight:600;color:#334155}
 .nav-links a{padding:6px 10px;border-radius:10px;transition:.2s;white-space:nowrap}
-.nav-links a:hover{color:#d97706;background:#f8fafc}
+.nav-links a:hover{color:#0ea5e9;background:#f8fafc}
 
 .dropdown{position:relative;display:inline-block}
 .dropdown:hover .dropdown-menu{display:block}
 .dropdown-menu{display:none;position:absolute;top:100%;left:0;width:280px;background:#fff;border-radius:16px;box-shadow:0 20px 48px rgba(0,0,0,.15);border:1px solid #e2e8f0;padding:10px;z-index:100}
 .dropdown-menu a{display:block;padding:10px 14px;font-size:14px;color:#334155;border-radius:10px;font-weight:600}
-.dropdown-menu a:hover{background:#f1f5f9;color:#d97706}
-.dropdown-menu a.highlight{color:#d97706;font-weight:800;border-top:1px solid #f1f5f9;margin-top:6px;padding-top:12px}
+.dropdown-menu a:hover{background:#f1f5f9;color:#0ea5e9}
+.dropdown-menu a.highlight{color:#0ea5e9;font-weight:800;border-top:1px solid #f1f5f9;margin-top:6px;padding-top:12px}
 
 .btn-cta{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 24px;border-radius:14px;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:16px;box-shadow:0 8px 24px rgba(249,115,22,.35);transition:.25s;border:none;cursor:pointer}
 .btn-cta:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(249,115,22,.5);background:linear-gradient(135deg,#fb923c,#f97316)}
 .btn-dark-navy{background:#0d1b2a;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;padding:14px 28px;border-radius:14px;display:inline-flex;align-items:center;gap:8px;font-size:16px;transition:.2s;box-shadow:0 8px 20px rgba(0,0,0,.2)}
 .btn-dark-navy:hover{transform:translateY(-2px);background:#14263b}
-.btn-glass-amber{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;padding:14px 28px;border-radius:14px;display:inline-flex;align-items:center;gap:8px;font-size:16px;transition:.2s;backdrop-filter:blur(8px)}
-.btn-glass-amber:hover{background:rgba(255,255,255,.3);transform:translateY(-2px)}
+.btn-glass-cyan{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;padding:14px 28px;border-radius:14px;display:inline-flex;align-items:center;gap:8px;font-size:16px;transition:.2s;backdrop-filter:blur(8px)}
+.btn-glass-cyan:hover{background:rgba(255,255,255,.3);transform:translateY(-2px)}
 
 /* HERO & GENERAL SECTIONS */
 .page-hero{position:relative;padding:76px 0 88px;background:linear-gradient(rgba(13,27,42,.88),rgba(13,27,42,.95)),url('https://images.pexels.com/photos/34859642/pexels-photo-34859642.jpeg?auto=compress&cs=tinysrgb&w=1600') center/cover no-repeat;overflow:hidden}
 .page-hero h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(38px,5vw,56px);font-weight:900;line-height:1.1;margin:16px 0 14px;color:#fff;max-width:820px;letter-spacing:-.03em}
-.page-hero h1 span{color:#fbbf24}
-.crumb-trail{font-size:14px;color:#fbbf24;font-weight:700;margin-bottom:14px}
+.page-hero h1 span{color:#38bdf8}
+.crumb-trail{font-size:14px;color:#38bdf8;font-weight:700;margin-bottom:14px}
 .crumb-trail a{color:#94a3b8;transition:.2s}.crumb-trail a:hover{color:#fff}
-.tag-badge{display:inline-block;padding:6px 14px;border-radius:999px;background:#fef3c7;color:#b45309;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.tag-badge{display:inline-block;padding:6px 14px;border-radius:999px;background:#e0f2fe;color:#0284c7;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
 
 .sec-white{background:#fff;color:#0f172a;padding:84px 0}
 .sec-dark{background:#0d1b2a;color:#fff;padding:84px 0}
@@ -77,7 +77,7 @@ a{color:inherit;text-decoration:none}
 /* STATS BAR */
 .stats-bar{background:#0b1320;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);padding:32px 0}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
-.stat-item h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:36px;font-weight:900;color:#fbbf24;margin:0}
+.stat-item h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:36px;font-weight:900;color:#38bdf8;margin:0}
 .stat-item p{font-size:13px;font-weight:700;color:#94a3b8;margin:4px 0 0;text-transform:uppercase;letter-spacing:.05em}
 
 /* GRIDS */
@@ -85,25 +85,25 @@ a{color:inherit;text-decoration:none}
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 .dir-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:20px}
 .dir-card-white{display:flex;align-items:center;justify-space:space-between;padding:16px 20px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;color:#0d1b2a;font-weight:700;font-size:14px;transition:.25s;box-shadow:0 4px 12px rgba(0,0,0,.02);text-decoration:none}
-.dir-card-white:hover{transform:translateY(-3px);border-color:#d97706;color:#d97706;box-shadow:0 12px 28px rgba(217,119,6,.15)}
-.dir-card-white:after{content:"→";color:#d97706;font-weight:900}
+.dir-card-white:hover{transform:translateY(-3px);border-color:#0ea5e9;color:#0ea5e9;box-shadow:0 12px 28px rgba(217,119,6,.15)}
+.dir-card-white:after{content:"→";color:#0ea5e9;font-weight:900}
 
 /* CARDS */
 .service-hub-card{background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:26px;box-shadow:0 8px 24px rgba(0,0,0,.03);transition:.25s;display:flex;flex-direction:column;justify-space:space-between}
-.service-hub-card:hover{transform:translateY(-5px);border-color:#d97706;box-shadow:0 16px 36px rgba(217,119,6,.12)}
-.service-hub-icon{width:42px;height:42px;border-radius:12px;background:#fef3c7;color:#b45309;display:grid;place-items:center;font-size:20px;margin-bottom:16px}
+.service-hub-card:hover{transform:translateY(-5px);border-color:#0ea5e9;box-shadow:0 16px 36px rgba(217,119,6,.12)}
+.service-hub-icon{width:42px;height:42px;border-radius:12px;background:#e0f2fe;color:#0284c7;display:grid;place-items:center;font-size:20px;margin-bottom:16px}
 .service-hub-card h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:19px;font-weight:800;color:#0d1b2a;margin:0 0 8px}
 .service-hub-card p{color:#64748b;font-size:14px;line-height:1.6;margin:0 0 16px}
-.service-hub-card a{color:#d97706;font-weight:800;font-size:14px}
+.service-hub-card a{color:#0ea5e9;font-weight:800;font-size:14px}
 
 .blog-card{background:#fff;border:1px solid #e2e8f0;border-radius:18px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.03);transition:.25s;display:flex;flex-direction:column;justify-space:space-between}
-.blog-card:hover{transform:translateY(-5px);border-color:#d97706;box-shadow:0 16px 36px rgba(217,119,6,.12)}
+.blog-card:hover{transform:translateY(-5px);border-color:#0ea5e9;box-shadow:0 16px 36px rgba(217,119,6,.12)}
 .blog-card-img{width:100%;height:190px;object-fit:cover}
 .blog-card-body{padding:22px;display:flex;flex-direction:column;flex-grow:1;justify-space:between}
 .blog-date{font-size:12px;font-weight:700;color:#94a3b8;margin-bottom:8px}
 .blog-card-body h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;font-weight:800;color:#0d1b2a;line-height:1.35;margin:0 0 10px}
 .blog-card-body p{color:#64748b;font-size:13px;line-height:1.6;margin:0 0 16px}
-.blog-card-body a{color:#d97706;font-weight:800;font-size:13px;display:inline-flex;align-items:center;gap:4px}
+.blog-card-body a{color:#0ea5e9;font-weight:800;font-size:13px;display:inline-flex;align-items:center;gap:4px}
 
 .service-main-grid{display:grid;grid-template-columns:1fr 380px;gap:44px;align-items:start}
 .service-content-box{background:#fff;color:#0f172a;padding:40px;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.04);border:1px solid #e2e8f0}
@@ -116,7 +116,7 @@ a{color:inherit;text-decoration:none}
 
 .checklist-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0 32px;font-size:14px;font-weight:700;color:#1e293b}
 .check-item-line{display:flex;align-items:center;gap:8px}
-.check-item-line span{color:#d97706;font-weight:900}
+.check-item-line span{color:#0ea5e9;font-weight:900}
 
 .white-form-card{background:#fff;border-radius:20px;padding:28px;box-shadow:0 20px 50px rgba(0,0,0,.08);border:1px solid #e2e8f0;color:#0f172a}
 .white-form-card h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:900;color:#0d1b2a;margin:0 0 4px}
@@ -124,11 +124,11 @@ a{color:inherit;text-decoration:none}
 
 .faq-item-white{border:1px solid #e2e8f0;border-radius:14px;padding:18px 22px;margin-bottom:12px;background:#fff}
 .faq-item-white summary{font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:800;color:#0d1b2a;cursor:pointer;list-style:none;display:flex;align-items:center;justify-space:space-between}
-.faq-item-white summary:after{content:"▼";font-size:12px;color:#d97706}
+.faq-item-white summary:after{content:"▼";font-size:12px;color:#0ea5e9}
 .faq-item-white p{color:#64748b;font-size:14px;line-height:1.65;margin:12px 0 0}
 
 /* FOOTER */
-.footer-cta-banner{background:linear-gradient(135deg,#d97706,#b45309);color:#fff;padding:52px 0}
+.footer-cta-banner{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;padding:52px 0}
 .footer-cta-flex{display:flex;align-items:center;justify-space:space-between;gap:24px}
 .footer-cta-flex h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:32px;font-weight:900;margin:0 0 6px;color:#fff}
 .footer-cta-flex p{font-size:16px;margin:0;opacity:.95}
@@ -138,7 +138,7 @@ a{color:inherit;text-decoration:none}
 .footer-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1.2fr;gap:40px}
 .footer-main h3{font-family:'Plus Jakarta Sans',sans-serif;color:#fff;margin-top:0;font-size:18px;font-weight:800}
 .footer-main a{display:block;color:#94a3b8;margin:12px 0;transition:.2s;font-size:14px;font-weight:500}
-.footer-main a:hover{color:#fbbf24}
+.footer-main a:hover{color:#38bdf8}
 
 .footer-bottom{background:#08101a;border-top:1px solid rgba(255,255,255,.08);padding:24px 0;font-size:13px;color:#64748b}
 .footer-bottom .wrap{display:flex;align-items:center;justify-space:space-between}
@@ -169,6 +169,17 @@ a{color:inherit;text-decoration:none}
   .btn-cta{width:100%}
 }
 `;
+
+
+function mapEmbedHtml(locationName: string) {
+  const query = encodeURIComponent(locationName + ", USA");
+  return `<div style="margin-top:36px;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.08);border:1px solid #e2e8f0;background:#fff;padding:12px;">
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;font-weight:800;color:#0d1b2a;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+      <span>📍</span> Interactive Service Area Map &amp; Coverage Zone — ${esc(locationName)}
+    </div>
+    <iframe src="https://maps.google.com/maps?q=${query}&t=&z=11&ie=UTF8&iwloc=&output=embed" width="100%" height="360" style="border:0;border-radius:12px;" allowfullscreen="" loading="lazy"></iframe>
+  </div>`;
+}
 
 function header(): string {
   return `<div class="top-bar">
@@ -232,7 +243,7 @@ function footer(): string {
       </div>
       <div class="footer-cta-btns">
         <a href="${PHONE_HREF}" class="btn-dark-navy">📞 Call ${PHONE_DISPLAY}</a>
-        <a href="https://${DOMAIN}/contact/" class="btn-glass-amber">Request Online Quote</a>
+        <a href="https://${DOMAIN}/contact/" class="btn-glass-cyan">Request Online Quote</a>
       </div>
     </div>
   </section>
@@ -253,7 +264,7 @@ function footer(): string {
         <a href="https://${DOMAIN}/services/off-track-garage-door-repair/">Off-Track Realignment</a>
         <a href="https://${DOMAIN}/services/garage-door-cable-roller-replacement/">Cable &amp; Roller Replace</a>
         <a href="https://${DOMAIN}/services/emergency-24-7-garage-door-repair/">24/7 Emergency Repair</a>
-        <a href="https://${DOMAIN}/services/" style="color:#fbbf24;font-weight:700;">All ${services.length} Services →</a>
+        <a href="https://${DOMAIN}/services/" style="color:#38bdf8;font-weight:700;">All ${services.length} Services →</a>
       </div>
       <div>
         <h3>Service Areas</h3>
@@ -262,14 +273,14 @@ function footer(): string {
         <a href="https://texas.${DOMAIN}/">Texas Services</a>
         <a href="https://florida.${DOMAIN}/">Florida Services</a>
         <a href="https://pennsylvania.${DOMAIN}/">Pennsylvania Services</a>
-        <a href="https://${DOMAIN}/areas-we-serve/" style="color:#fbbf24;font-weight:700;">All 30,900+ Cities →</a>
+        <a href="https://${DOMAIN}/areas-we-serve/" style="color:#38bdf8;font-weight:700;">All 30,900+ Cities →</a>
       </div>
       <div>
         <h3>Get In Touch</h3>
         <a href="${PHONE_HREF}" style="color:#fff;font-weight:800;font-size:16px;">📞 ${PHONE_DISPLAY}</a>
         <p style="font-size:14px;color:#94a3b8;margin:10px 0 6px;">✉️ dispatch@${DOMAIN}</p>
         <p style="font-size:14px;color:#94a3b8;margin:0 0 6px;">📍 ${ADDRESS}</p>
-        <p style="font-size:14px;color:#fbbf24;margin:0;font-weight:700;">🕒 Mon–Sun 24 Hours · 24/7 Emergency Response</p>
+        <p style="font-size:14px;color:#38bdf8;margin:0;font-weight:700;">🕒 Mon–Sun 24 Hours · 24/7 Emergency Response</p>
       </div>
     </div>
   </footer>
@@ -343,7 +354,7 @@ export function nationalServicePage(service: any) {
         <p style="color:#cbd5e1;font-size:16px;line-height:1.7;">Fast, licensed, and certified garage door technician response across all 50 states. 24/7 emergency spring repair, opener replacement, and cable alignment.</p>
         <div style="display:flex;gap:14px;margin-top:24px;">
           <a class="btn-cta" href="${PHONE_HREF}">Submit &amp; Call ${PHONE_DISPLAY}</a>
-          <a class="btn-glass-amber" href="https://${DOMAIN}/contact/">Request Free Quote</a>
+          <a class="btn-glass-cyan" href="https://${DOMAIN}/contact/">Request Free Quote</a>
         </div>
       </div>
       <div>
@@ -454,7 +465,7 @@ export function localServicePage(state: StateItem, city: [string, string], servi
         <p style="color:#cbd5e1;font-size:16px;line-height:1.7;">Certified 24/7 emergency garage door spring replacement, opener repair, and off-track service in ${esc(cityName)}.</p>
         <div style="display:flex;gap:14px;margin-top:24px;">
           <a class="btn-cta" href="${PHONE_HREF}">📞 Call ${PHONE_DISPLAY}</a>
-          <a class="btn-glass-amber" href="https://${DOMAIN}/contact/">Request Quote</a>
+          <a class="btn-glass-cyan" href="https://${DOMAIN}/contact/">Request Quote</a>
         </div>
       </div>
       <div>
@@ -595,9 +606,9 @@ export function articlePage(article: any) {
   <section class="sec-white" style="padding:70px 0;">
     <div class="wrap" style="max-width:920px;">
       ${article.directAnswer ? `
-      <div style="background:#fef3c7;border-left:5px solid #d97706;padding:26px;border-radius:14px;margin-bottom:40px;box-shadow:0 6px 20px rgba(217,119,6,.08);">
-        <h3 style="margin:0 0 10px;color:#92400e;font-size:20px;font-weight:800;">💡 Direct Answer &amp; Quick Summary</h3>
-        <p style="margin:0;color:#78350f;font-size:16px;line-height:1.7;">${esc(article.directAnswer)}</p>
+      <div style="background:#e0f2fe;border-left:5px solid #0ea5e9;padding:26px;border-radius:14px;margin-bottom:40px;box-shadow:0 6px 20px rgba(217,119,6,.08);">
+        <h3 style="margin:0 0 10px;color:#0369a1;font-size:20px;font-weight:800;">💡 Direct Answer &amp; Quick Summary</h3>
+        <p style="margin:0;color:#0c4a6e;font-size:16px;line-height:1.7;">${esc(article.directAnswer)}</p>
       </div>` : ""}
 
       <div style="margin-bottom:36px;">
@@ -664,7 +675,7 @@ export function statePage(state: StateItem) {
   const cities = state.cities || [];
   const cityDirectoryHtml = cities.map(([cSlug, cName]) => `<a class="dir-card-white" href="https://${cSlug}-${stateSlug}.${DOMAIN}/"><span>📍 ${esc(cName)}</span></a>`).join("");
   const stateServicesCards = services.map(s => `<div class="service-hub-card"><div><div class="service-hub-icon">🚗</div><h3>${esc(s.title)} in ${esc(state.name)}</h3><p>${esc(s.summary)}</p></div><a href="https://${DOMAIN}/services/${s.slug}/">Review service →</a></div>`).join("");
-  const body = `<main><section class="page-hero"><div class="wrap"><h1>Garage Door Repair across <span>${esc(state.name)} (${cities.length} Cities)</span></h1></div></section><section class="sec-gray" style="padding:70px 0;"><div class="wrap"><div style="text-align:center;margin-bottom:32px;"><span class="tag-badge">ALL ${cities.length} CITIES DIRECTORY</span><h2 class="sec-title" style="color:#0d1b2a;">Select Your City in ${esc(state.name)}</h2></div><div class="dir-grid">${cityDirectoryHtml}</div></div></section><section class="sec-white" style="padding:70px 0;"><div class="wrap"><div class="grid-3">${stateServicesCards}</div></div></section></main>`;
+  const body = `<main><section class="page-hero"><div class="wrap"><h1>Garage Door Repair across <span>${esc(state.name)} (${cities.length} Cities)</span></h1></div></section><section class="sec-gray" style="padding:70px 0;"><div class="wrap"><div style="text-align:center;margin-bottom:32px;"><span class="tag-badge">ALL ${cities.length} CITIES DIRECTORY</span><h2 class="sec-title" style="color:#0d1b2a;">Select Your City in ${esc(state.name)}</h2></div><div class="dir-grid">${cityDirectoryHtml}</div>${mapEmbedHtml(state.name)}</div></section><section class="sec-white" style="padding:70px 0;"><div class="wrap"><div class="grid-3">${stateServicesCards}</div></div></section></main>`;
   return shell(`Garage Door Repair across ${state.name} (${cities.length} Cities) | ${BRAND}`, `24/7 garage door repair across all ${cities.length} cities in ${state.name}.`, canonical, body);
 }
 
@@ -676,7 +687,7 @@ export function cityPage(state: StateItem, city: [string, string], host: string)
   const nearbyCities = (state.cities || []).filter(([cSlug]) => cSlug !== city[0]).slice(0, 8);
   const nearbyCardsHtml = nearbyCities.map(([cSlug, cName]) => `<a class="dir-card-white" href="https://${cSlug}-${stateSlug}.${DOMAIN}/"><span>📍 ${esc(cName)}</span></a>`).join("");
   const allServicesDirectoryHtml = services.map(s => `<div class="service-hub-card"><div><div class="service-hub-icon">🚗</div><h3>${esc(s.title)} in ${esc(cityName)}</h3><p>${esc(s.summary)}</p></div><a href="https://${host}/${s.slug}/">Review service →</a></div>`).join("");
-  const body = `<main><section class="page-hero"><div class="wrap"><h1>24/7 Garage Door Repair in <span>${esc(cityName)}, ${esc(state.name)}</span></h1></div></section><section class="sec-gray" style="padding:60px 0;"><div class="wrap"><div class="dir-grid">${nearbyCardsHtml}</div></div></section><section class="sec-white" style="padding:70px 0;"><div class="wrap"><div class="grid-3">${allServicesDirectoryHtml}</div></div></section></main>`;
+  const body = `<main><section class="page-hero"><div class="wrap"><h1>24/7 Garage Door Repair in <span>${esc(cityName)}, ${esc(state.name)}</span></h1></div></section><section class="sec-gray" style="padding:60px 0;"><div class="wrap"><div class="dir-grid">${nearbyCardsHtml}</div>${mapEmbedHtml(cityName + ", " + state.name)}</div></section><section class="sec-white" style="padding:70px 0;"><div class="wrap"><div class="grid-3">${allServicesDirectoryHtml}</div></div></section></main>`;
   return shell(`24/7 Garage Door Repair in ${cityName}, ${state.name} | ${BRAND}`, `24/7 local garage technicians in ${cityName}, ${state.name}.`, canonical, body);
 }
 
@@ -738,12 +749,12 @@ export function homePage(states: StateItem[]) {
   <section class="page-hero">
     <div class="wrap" style="display:grid;grid-template-columns:1fr 380px;gap:44px;align-items:start;">
       <div>
-        <span class="tag-badge" style="background:rgba(251,191,36,.18);color:#fbbf24;">24/7 NATIONWIDE EMERGENCY DISPATCH</span>
+        <span class="tag-badge" style="background:rgba(251,191,36,.18);color:#38bdf8;">24/7 NATIONWIDE EMERGENCY DISPATCH</span>
         <h1 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(38px,5vw,56px);font-weight:900;color:#fff;line-height:1.1;margin:16px 0 14px;">
-          Emergency Garage Door Repair <span style="color:#fbbf24;">Pennsylvania &amp; USA</span>
+          Emergency Garage Door Repair <span style="color:#38bdf8;">Pennsylvania &amp; USA</span>
         </h1>
         <p style="font-size:16px;line-height:1.7;color:#cbd5e1;margin-bottom:24px;">Certified technicians providing 24/7 emergency spring replacement, opener repair, cable alignment, and off-track service across all 50 US states.</p>
-        <div style="display:flex;gap:14px;"><a class="btn-cta" href="${PHONE_HREF}">📞 Call ${PHONE_DISPLAY}</a><a class="btn-glass-amber" href="https://${DOMAIN}/contact/">Request Free Quote</a></div>
+        <div style="display:flex;gap:14px;"><a class="btn-cta" href="${PHONE_HREF}">📞 Call ${PHONE_DISPLAY}</a><a class="btn-glass-cyan" href="https://${DOMAIN}/contact/">Request Free Quote</a></div>
       </div>
       <div>
         <div class="white-form-card">
