@@ -82,22 +82,27 @@ function redirect(url: string, status = 308) {
 
 async function cached(request: Request, ctx: Context, render: () => Response) {
   if (request.method === "HEAD") return render();
-  const cache = (caches as CacheStorage & { default: Cache }).default;
-  const hit = await cache.match(request);
-  if (hit) return hit;
-  const result = render();
-  if (result.ok) ctx.waitUntil(cache.put(request, result.clone()));
-  return result;
+  try {
+    const cache = (caches as CacheStorage & { default: Cache }).default;
+    const hit = await cache.match(request);
+    if (hit) return hit;
+    const result = render();
+    if (result.ok) ctx.waitUntil(cache.put(request, result.clone()).catch(() => {}));
+    return result;
+  } catch (e) {
+    return render();
+  }
 }
 
 export default {
   async fetch(request: Request, env: Env, ctx: Context): Promise<Response> {
-    if (!["GET", "HEAD"].includes(request.method)) return new Response("Method Not Allowed", { status: 405 });
+    try {
+      if (!["GET", "HEAD"].includes(request.method)) return new Response("Method Not Allowed", { status: 405 });
 
-    const url = new URL(request.url);
-    const hostname = url.hostname.toLowerCase();
-    const path = url.pathname;
-    const method = request.method;
+      const url = new URL(request.url);
+      const hostname = url.hostname.toLowerCase();
+      const path = url.pathname;
+      const method = request.method;
 
     if (hostname === `www.${DOMAIN}`) {
       url.hostname = DOMAIN;
@@ -244,5 +249,8 @@ export default {
     if (!service) return notFound("This garage door service could not be found.", method);
 
     return cached(request, ctx, () => htmlResponse(localServicePage(location.state, location.city!, service, hostname), method));
+    } catch (err: any) {
+      return htmlResponse(notFoundPage("An unexpected error occurred. Please try again."), "GET", 500);
+    }
   },
 };
