@@ -448,6 +448,61 @@ export function localServicePage(state: StateRow, city: [string, string], servic
   return shell(`${service.title} in ${cityName}, ${state.name}`, `${service.summary} Review local garage door service info for ${cityName}, ${state.name}.`, canonical, body, schema);
 }
 
+export function articlesHubPage() {
+  const canonical = `https://${DOMAIN}/articles/`;
+  const cardsHtml = articles.map((art) => `
+    <div class="service-card">
+      <div class="category-badge">${esc(art.category)}</div>
+      <h3>${esc(art.title)}</h3>
+      <p>${esc(art.summary)}</p>
+      <a class="btn ghost" href="https://${DOMAIN}/articles/${art.slug}/">Read Guide →</a>
+    </div>
+  `).join("");
+
+  const body = `<main>
+  <section class="hero"><div class="wrap">
+    <div class="crumb"><a href="https://${DOMAIN}/">Home</a> / Articles</div>
+    <h1>Garage Door Repair <span>Guides &amp; Technical Articles</span></h1>
+    <p style="color:#cbd5e1;font-size:16px;">Comprehensive troubleshooting, safety, and maintenance guides for homeowners.</p>
+  </div></section>
+  <section class="section soft"><div class="wrap"><div class="services-grid">${cardsHtml}</div></div></section>
+  </main>`;
+
+  return shell("Garage Door Repair Guides & Technical Articles | Garage Door Gazette", "Read comprehensive troubleshooting and maintenance guides.", canonical, body);
+}
+
+export function articlePage(article: any) {
+  const canonical = `https://${DOMAIN}/articles/${article.slug}/`;
+  const warningList = (article.warningSigns || []).map((item: string) => `<li>⚠️ ${esc(item)}</li>`).join("");
+  const causesList = (article.commonCauses || []).map((item: string) => `<li>🔧 ${esc(item)}</li>`).join("");
+  const checksList = (article.professionalChecks || []).map((item: string) => `<li>✔ ${esc(item)}</li>`).join("");
+
+  const body = `<main>
+  <section class="hero"><div class="wrap">
+    <div class="crumb"><a href="https://${DOMAIN}/">Home</a> / <a href="https://${DOMAIN}/articles/">Articles</a> / ${esc(article.category)}</div>
+    <h1>${esc(article.title)}</h1>
+    <p style="color:#cbd5e1;font-size:16px;">${esc(article.summary)}</p>
+  </div></section>
+  <section class="section"><div class="wrap" style="max-width:860px;font-size:16px;line-height:1.8;color:#334155;">
+    <div style="background:#f0f9ff;border-left:4px solid #0ea5e9;padding:24px;border-radius:12px;margin-bottom:32px;">
+      <h3 style="margin:0 0 8px;color:#0369a1;font-size:18px;">💡 Direct Answer Summary</h3>
+      <p style="margin:0;color:#0c4a6e;font-size:15px;line-height:1.6;">${esc(article.directAnswer)}</p>
+    </div>
+
+    <h2>Key Warning Signs</h2>
+    <ul style="list-style:none;padding:0;">${warningList}</ul>
+
+    <h2>Common Causes</h2>
+    <ul style="list-style:none;padding:0;">${causesList}</ul>
+
+    <h2>Professional Inspection &amp; Repair Checklist</h2>
+    <ul style="list-style:none;padding:0;">${checksList}</ul>
+  </div></section>
+  </main>`;
+
+  return shell(`${article.title} | Garage Door Gazette`, article.summary, canonical, body);
+}
+
 export function notFoundPage(message: string) {
   return `<!doctype html><html><head><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1"><title>404 | Garage Door Gazette</title><style>${CSS}</style></head><body>${header()}<main class="section"><div class="wrap"><span class="eyeline">Page not found</span><h1>404</h1><p>${esc(message)}</p><a class="btn dark" href="https://${DOMAIN}/areas-we-serve/">Browse Service Areas</a></div></main>${footer()}</body></html>`;
 }
