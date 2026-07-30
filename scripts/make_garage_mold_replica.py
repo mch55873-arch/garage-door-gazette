@@ -1,4 +1,111 @@
+import os
+import json
+
+print("=== CONVERTING GARAGE DOOR GAZETTE TO 1:1 MOLD REPLICA DESIGN ===")
+
+# 1. Create src/sitemaps.ts
+sitemaps_ts = '''import { services } from "../data/services";
 import { articles } from "../data/articles";
+import database from "../data/usa_database.json";
+
+const DOMAIN = "garagedoorgazette.com";
+export const SITEMAP_LIMIT = 2000;
+const URLS_PER_CITY = services.length + 1;
+const TODAY = "2026-07-30";
+
+export type StateItem = {
+  code: string;
+  name: string;
+  slug: string;
+  cities: [string, string][];
+};
+
+function xml(value: string) {
+  return value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char] || char);
+}
+
+function xmlResponse(body: string, method = "GET") {
+  const bytes = new TextEncoder().encode(body);
+  return new Response(method === "HEAD" ? null : bytes, {
+    headers: {
+      "content-type": "application/xml; charset=utf-8",
+      "content-length": String(bytes.byteLength),
+      "cache-control": "public, max-age=86400, s-maxage=604800",
+      "x-content-type-options": "nosniff",
+      "access-control-allow-origin": "*",
+    },
+  });
+}
+
+export function sitemapIndex(states: StateItem[], method = "GET") {
+  const entries = [`https://${DOMAIN}/sitemaps/core.xml`];
+  for (const state of states) {
+    const chunks = Math.ceil((state.cities.length * URLS_PER_CITY) / SITEMAP_LIMIT);
+    for (let chunk = 1; chunk <= chunks; chunk++) {
+      entries.push(`https://${DOMAIN}/sitemaps/${state.slug}-${chunk}.xml`);
+    }
+  }
+  const body = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries.map((loc) => `  <sitemap>\\n    <loc>${xml(loc)}</loc>\\n    <lastmod>${TODAY}</lastmod>\\n  </sitemap>`).join("\\n")}
+</sitemapindex>`;
+  return xmlResponse(body, method);
+}
+
+export function coreSitemap(states: StateItem[], method = "GET") {
+  const corePaths = [
+    "/",
+    "/about/",
+    "/articles/",
+    "/services/",
+    "/areas-we-serve/",
+    "/contact/",
+    "/privacy-policy/",
+    "/terms/",
+    "/disclaimer/",
+  ];
+  const urls = [
+    ...corePaths.map((path) => `https://${DOMAIN}${path}`),
+    ...services.map((service) => `https://${DOMAIN}/services/${service.slug}/`),
+    ...articles.map((article) => `https://${DOMAIN}/articles/${article.slug}/`),
+    ...states.map((state) => `https://${state.slug}.${DOMAIN}/`),
+  ];
+  return sitemapUrlset(urls, method);
+}
+
+export function stateSitemap(state: StateItem, chunk: number, method = "GET") {
+  if (!Number.isInteger(chunk) || chunk < 1) return null;
+  const start = (chunk - 1) * SITEMAP_LIMIT;
+  const total = state.cities.length * URLS_PER_CITY;
+  if (start >= total) return null;
+  const end = Math.min(total, start + SITEMAP_LIMIT);
+  const urls: string[] = [];
+  for (let index = start; index < end; index++) {
+    const cityIndex = Math.floor(index / URLS_PER_CITY);
+    const pageIndex = index % URLS_PER_CITY;
+    const city = state.cities[cityIndex];
+    if (!city) break;
+    const host = `${city[0]}-${state.slug}.${DOMAIN}`;
+    urls.push(pageIndex === 0 ? `https://${host}/` : `https://${host}/${services[pageIndex - 1].slug}/`);
+  }
+  return sitemapUrlset(urls, method);
+}
+
+function sitemapUrlset(urls: string[], method = "GET") {
+  const body = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map((loc) => `  <url>\\n    <loc>${xml(loc)}</loc>\\n    <lastmod>${TODAY}</lastmod>\\n    <changefreq>weekly</changefreq>\\n  </url>`).join("\\n")}
+</urlset>`;
+  return xmlResponse(body, method);
+}
+'''
+
+with open('src/sitemaps.ts', 'w', encoding='utf-8') as f:
+    f.write(sitemaps_ts)
+print("[OK] Created src/sitemaps.ts for garage-door-gazette")
+
+# 2. Write 1:1 replica locationTemplates.ts
+templates_ts = '''import { articles } from "../data/articles";
 import { services } from "../data/services";
 
 export type StateItem = {
@@ -842,3 +949,43 @@ export function disclaimerPage() {
 export function notFoundPage(message: string) {
   return `<!doctype html><html><head><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1"><title>404 | ${BRAND}</title><style>${CSS}</style></head><body>${header()}<main class="sec-dark"><div class="wrap"><h1>404</h1><p>${esc(message)}</p><a class="btn-cta" href="https://${DOMAIN}/">Back to Home</a></div></main>${footer()}</body></html>`;
 }
+'''
+
+with open('src/locationTemplates.ts', 'w', encoding='utf-8') as f:
+    f.write(templates_ts)
+print("[OK] Updated src/locationTemplates.ts to 1:1 mold replica")
+
+# 3. Create standalone wrangler.jsonc
+wrangler_jsonc = '''{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "garage-door-gazette",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-07-24",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "./out",
+    "binding": "ASSETS",
+    "html_handling": "force-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": true
+  },
+  "routes": [
+    { "pattern": "garagedoorgazette.com/*", "zone_name": "garagedoorgazette.com" },
+    { "pattern": "www.garagedoorgazette.com/*", "zone_name": "garagedoorgazette.com" },
+    { "pattern": "*.garagedoorgazette.com/*", "zone_name": "garagedoorgazette.com" }
+  ]
+}
+'''
+
+with open('wrangler.jsonc', 'w', encoding='utf-8') as f:
+    f.write(wrangler_jsonc)
+print("[OK] Created standalone wrangler.jsonc")
+
+os.makedirs('out', exist_ok=True)
+with open('out/_dummy.txt', 'w', encoding='utf-8') as f:
+    f.write('garage-door-gazette dummy asset')
+print("[OK] Created out/_dummy.txt")
+
+print("=== CONVERSION SCRIPT COMPLETE ===")

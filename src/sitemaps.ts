@@ -1,32 +1,18 @@
-import { articles } from "../data/articles";
 import { services } from "../data/services";
-import type { StateRow } from "./locationTemplates";
+import { articles } from "../data/articles";
+import database from "../data/usa_database.json";
 
 const DOMAIN = "garagedoorgazette.com";
 export const SITEMAP_LIMIT = 2000;
 const URLS_PER_CITY = services.length + 1;
-const CORE_PATHS = [
-  "/",
-  "/services/",
-  "/areas-we-serve/",
-  "/articles/",
-  "/about/",
-  "/contact/",
-  "/privacy-policy/",
-  "/terms/",
-  "/disclaimer/",
-  "/cookie-policy/",
-  "/editorial-policy/",
-  "/provider-disclosure/",
-  "/accessibility/",
-];
+const TODAY = "2026-07-30";
 
-export function getStateSlug(state: any): string {
-  if (state.slug) return state.slug.toLowerCase();
-  if (state.name) return state.name.toLowerCase().replace(/\s+/g, '-');
-  if (state.code) return state.code.toLowerCase();
-  return '';
-}
+export type StateItem = {
+  code: string;
+  name: string;
+  slug: string;
+  cities: [string, string][];
+};
 
 function xml(value: string) {
   return value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char] || char);
@@ -38,41 +24,51 @@ function xmlResponse(body: string, method = "GET") {
     headers: {
       "content-type": "application/xml; charset=utf-8",
       "content-length": String(bytes.byteLength),
-      "cache-control": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000",
-      "cdn-cache-control": "public, max-age=604800",
-      "cloudflare-cdn-cache-control": "public, max-age=604800",
+      "cache-control": "public, max-age=86400, s-maxage=604800",
       "x-content-type-options": "nosniff",
       "access-control-allow-origin": "*",
     },
   });
 }
 
-export function sitemapIndex(states: StateRow[], method = "GET") {
+export function sitemapIndex(states: StateItem[], method = "GET") {
   const entries = [`https://${DOMAIN}/sitemaps/core.xml`];
   for (const state of states) {
-    const slug = getStateSlug(state);
     const chunks = Math.ceil((state.cities.length * URLS_PER_CITY) / SITEMAP_LIMIT);
     for (let chunk = 1; chunk <= chunks; chunk++) {
-      entries.push(`https://${DOMAIN}/sitemaps/${slug}-${chunk}.xml`);
+      entries.push(`https://${DOMAIN}/sitemaps/${state.slug}-${chunk}.xml`);
     }
   }
-  const body = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.map((loc) => `  <sitemap><loc>${xml(loc)}</loc></sitemap>`).join("\n")}\n</sitemapindex>`;
+  const body = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries.map((loc) => `  <sitemap>\n    <loc>${xml(loc)}</loc>\n    <lastmod>${TODAY}</lastmod>\n  </sitemap>`).join("\n")}
+</sitemapindex>`;
   return xmlResponse(body, method);
 }
 
-export function coreSitemap(states: StateRow[], method = "GET") {
+export function coreSitemap(states: StateItem[], method = "GET") {
+  const corePaths = [
+    "/",
+    "/about/",
+    "/articles/",
+    "/services/",
+    "/areas-we-serve/",
+    "/contact/",
+    "/privacy-policy/",
+    "/terms/",
+    "/disclaimer/",
+  ];
   const urls = [
-    ...CORE_PATHS.map((path) => `https://${DOMAIN}${path}`),
+    ...corePaths.map((path) => `https://${DOMAIN}${path}`),
     ...services.map((service) => `https://${DOMAIN}/services/${service.slug}/`),
     ...articles.map((article) => `https://${DOMAIN}/articles/${article.slug}/`),
-    ...states.map((state) => `https://${getStateSlug(state)}.${DOMAIN}/`),
+    ...states.map((state) => `https://${state.slug}.${DOMAIN}/`),
   ];
   return sitemapUrlset(urls, method);
 }
 
-export function stateSitemap(state: StateRow, chunk: number, method = "GET") {
+export function stateSitemap(state: StateItem, chunk: number, method = "GET") {
   if (!Number.isInteger(chunk) || chunk < 1) return null;
-  const slug = getStateSlug(state);
   const start = (chunk - 1) * SITEMAP_LIMIT;
   const total = state.cities.length * URLS_PER_CITY;
   if (start >= total) return null;
@@ -81,23 +77,18 @@ export function stateSitemap(state: StateRow, chunk: number, method = "GET") {
   for (let index = start; index < end; index++) {
     const cityIndex = Math.floor(index / URLS_PER_CITY);
     const pageIndex = index % URLS_PER_CITY;
-    const cityObj = state.cities[cityIndex];
-    const citySlug = Array.isArray(cityObj) ? cityObj[0] : (cityObj as any).slug;
-    const host = `${citySlug}-${slug}.${DOMAIN}`;
+    const city = state.cities[cityIndex];
+    if (!city) break;
+    const host = `${city[0]}-${state.slug}.${DOMAIN}`;
     urls.push(pageIndex === 0 ? `https://${host}/` : `https://${host}/${services[pageIndex - 1].slug}/`);
   }
   return sitemapUrlset(urls, method);
 }
 
 function sitemapUrlset(urls: string[], method = "GET") {
-  const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((loc) => `  <url><loc>${xml(loc)}</loc></url>`).join("\n")}\n</urlset>`;
+  const body = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map((loc) => `  <url>\n    <loc>${xml(loc)}</loc>\n    <lastmod>${TODAY}</lastmod>\n    <changefreq>weekly</changefreq>\n  </url>`).join("\n")}
+</urlset>`;
   return xmlResponse(body, method);
-}
-
-export function sitemapStats(states: StateRow[]) {
-  const cities = states.reduce((sum, state) => sum + state.cities.length, 0);
-  const core = CORE_PATHS.length + services.length + articles.length + states.length;
-  const total = core + cities * URLS_PER_CITY;
-  const files = 1 + states.reduce((sum, state) => sum + Math.ceil((state.cities.length * URLS_PER_CITY) / SITEMAP_LIMIT), 0);
-  return { cities, core, total, files, services: services.length };
 }
