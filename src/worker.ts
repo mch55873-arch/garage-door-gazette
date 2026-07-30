@@ -65,7 +65,7 @@ function htmlResponse(html: string, method = "GET", status = 200, extra: Record<
     headers: {
       "content-type": "text/html; charset=utf-8",
       "content-length": String(bytes.byteLength),
-      "cache-control": "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800",
+      "cache-control": "no-cache, no-store, must-revalidate",
       "x-content-type-options": "nosniff",
       ...extra,
     },
@@ -82,16 +82,7 @@ function redirect(url: string, status = 308) {
 
 async function cached(request: Request, ctx: Context, render: () => Response) {
   if (request.method === "HEAD") return render();
-  try {
-    const cache = (caches as CacheStorage & { default: Cache }).default;
-    const hit = await cache.match(request);
-    if (hit) return hit;
-    const result = render();
-    if (result.ok) ctx.waitUntil(cache.put(request, result.clone()).catch(() => {}));
-    return result;
-  } catch (e) {
-    return render();
-  }
+  return render();
 }
 
 export default {
