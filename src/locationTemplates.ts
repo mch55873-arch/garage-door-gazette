@@ -218,8 +218,8 @@ export function articlePage(article: (typeof articles)[number]) {
       }
     ]
   };
-  const body = `<main><section class="hero"><div class="wrap hero-grid"><div><div class="crumb"><a href="https://${DOMAIN}/">Home</a> / <a href="https://${DOMAIN}/articles/">Articles</a> / ${esc(article.title)}</div><span class="eyebrow">Maintenance Guide</span><h1>${esc(article.title)}</h1><p>${esc(article.excerpt)}</p><div class="buttons"><a class="btn" href="tel:${PHONE}">Call ${PHONE}</a></div></div><div>${leadFormHtml(article.title)}</div></div></section><section class="section content"><div class="wrap article"><span class="eyeline">Expert Guide</span><h2>Overview</h2><p>${esc(article.excerpt)}</p></div></section></main>`;
-  return shell(`${article.title} - Garage Door Gazette`, article.excerpt, canonical, body, schema);
+  const body = `<main><section class="hero"><div class="wrap hero-grid"><div><div class="crumb"><a href="https://${DOMAIN}/">Home</a> / <a href="https://${DOMAIN}/articles/">Articles</a> / ${esc(article.title)}</div><span class="eyebrow">Maintenance Guide</span><h1>${esc(article.title)}</h1><p>${esc(article.summary || article.directAnswer)}</p><div class="buttons"><a class="btn" href="tel:${PHONE}">Call ${PHONE}</a></div></div><div>${leadFormHtml(article.title)}</div></div></section><section class="section content"><div class="wrap article"><span class="eyeline">Expert Guide</span><h2>Overview</h2><p>${esc(article.summary || article.directAnswer)}</p></div></section></main>`;
+  return shell(`${article.title} - Garage Door Gazette`, article.summary || article.directAnswer, canonical, body, schema);
 }
 
 export function infoPage(title: string, content: string, path: string) {
