@@ -198,6 +198,21 @@ export function articlesHubPage() {
 
 export function articlePage(article: (typeof articles)[number]) {
   const canonical = `https://${DOMAIN}/articles/${article.slug}/`;
+
+  const warningList = (article.warningSigns || []).map((item: string) => `<li style="padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:8px;font-size:15px;color:#1e293b;">⚠️ ${esc(item)}</li>`).join("");
+  const causesList = (article.commonCauses || []).map((item: string) => `<li style="padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:8px;font-size:15px;color:#1e293b;">🔧 ${esc(item)}</li>`).join("");
+  const checksList = (article.professionalChecks || []).map((item: string) => `<li style="padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:8px;font-size:15px;color:#1e293b;">✔ ${esc(item)}</li>`).join("");
+  const preventionList = (article.prevention || []).map((item: string) => `<li style="padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:8px;font-size:15px;color:#1e293b;">🛡️ ${esc(item)}</li>`).join("");
+
+  const relatedServicesHtml = (article.serviceSlugs || []).map((sSlug: string) => {
+    const s = services.find(serv => serv.slug === sSlug);
+    if (!s) return "";
+    return `<a class="card" href="https://${DOMAIN}/services/${s.slug}/" style="display:block;padding:16px;background:#fff;border:1px solid #cbd5e1;border-radius:12px;text-decoration:none;margin-bottom:10px;">
+      <h4 style="margin:0 0 6px;color:#0f172a;font-size:16px;">🔧 ${esc(s.title)}</h4>
+      <p style="margin:0;color:#64748b;font-size:13px;">${esc(s.summary)}</p>
+    </a>`;
+  }).join("");
+
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -218,7 +233,67 @@ export function articlePage(article: (typeof articles)[number]) {
       }
     ]
   };
-  const body = `<main><section class="hero"><div class="wrap hero-grid"><div><div class="crumb"><a href="https://${DOMAIN}/">Home</a> / <a href="https://${DOMAIN}/articles/">Articles</a> / ${esc(article.title)}</div><span class="eyebrow">Maintenance Guide</span><h1>${esc(article.title)}</h1><p>${esc(article.summary || article.directAnswer)}</p><div class="buttons"><a class="btn" href="tel:${PHONE}">Call ${PHONE}</a></div></div><div>${leadFormHtml(article.title)}</div></div></section><section class="section content"><div class="wrap article"><span class="eyeline">Expert Guide</span><h2>Overview</h2><p>${esc(article.summary || article.directAnswer)}</p></div></section></main>`;
+
+  const body = `<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="crumb"><a href="https://${DOMAIN}/">Home</a> / <a href="https://${DOMAIN}/articles/">Articles</a> / ${esc(article.category || "Guide")}</div>
+        <span class="eyebrow">${esc(article.category || "Maintenance Guide")}</span>
+        <h1>${esc(article.title)}</h1>
+        <p>${esc(article.summary || article.directAnswer)}</p>
+        <div class="buttons"><a class="btn" href="tel:${PHONE}">Call ${PHONE}</a></div>
+      </div>
+      <div>${leadFormHtml(article.title)}</div>
+    </div>
+  </section>
+
+  <section class="section content" style="background:#f8fafc;padding:60px 0;">
+    <div class="wrap" style="max-width:920px;">
+      ${article.directAnswer ? `
+      <div style="background:#f0f9ff;border-left:5px solid #0ea5e9;padding:26px;border-radius:14px;margin-bottom:40px;box-shadow:0 6px 20px rgba(14,165,233,.08);">
+        <h3 style="margin:0 0 10px;color:#0369a1;font-size:20px;font-weight:800;">💡 Direct Answer &amp; Quick Diagnosis</h3>
+        <p style="margin:0;color:#0c4a6e;font-size:16px;line-height:1.7;">${esc(article.directAnswer)}</p>
+      </div>` : ""}
+
+      <div style="margin-bottom:36px;">
+        <h2 style="font-size:24px;font-weight:800;color:#0f172a;margin-bottom:16px;">Overview</h2>
+        <p style="font-size:16px;line-height:1.8;color:#334155;">${esc(article.summary)}</p>
+      </div>
+
+      ${warningList ? `
+      <div style="margin-bottom:36px;">
+        <h2 style="font-size:24px;font-weight:800;color:#0f172a;margin-bottom:16px;">⚠️ Key Warning Signs</h2>
+        <ul style="list-style:none;padding:0;">${warningList}</ul>
+      </div>` : ""}
+
+      ${causesList ? `
+      <div style="margin-bottom:36px;">
+        <h2 style="font-size:24px;font-weight:800;color:#0f172a;margin-bottom:16px;">🔧 Common Causes</h2>
+        <ul style="list-style:none;padding:0;">${causesList}</ul>
+      </div>` : ""}
+
+      ${checksList ? `
+      <div style="margin-bottom:36px;">
+        <h2 style="font-size:24px;font-weight:800;color:#0f172a;margin-bottom:16px;">✔ Professional Inspection &amp; Repair Checklist</h2>
+        <ul style="list-style:none;padding:0;">${checksList}</ul>
+      </div>` : ""}
+
+      ${preventionList ? `
+      <div style="margin-bottom:36px;">
+        <h2 style="font-size:24px;font-weight:800;color:#0f172a;margin-bottom:16px;">🛡️ Prevention &amp; Maintenance Tips</h2>
+        <ul style="list-style:none;padding:0;">${preventionList}</ul>
+      </div>` : ""}
+
+      ${relatedServicesHtml ? `
+      <div style="margin-top:48px;padding-top:32px;border-top:1px solid #e2e8f0;">
+        <h3 style="font-size:22px;font-weight:800;color:#0f172a;margin-bottom:16px;">🔗 Related Garage Door Services</h3>
+        <div>${relatedServicesHtml}</div>
+      </div>` : ""}
+    </div>
+  </section>
+  </main>`;
+
   return shell(`${article.title} - Garage Door Gazette`, article.summary || article.directAnswer, canonical, body, schema);
 }
 
