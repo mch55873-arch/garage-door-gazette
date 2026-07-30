@@ -174,7 +174,7 @@ export function areasWeServePage(states: StateRow[]) {
 
 export function articlesHubPage() {
   const canonical = `https://${DOMAIN}/articles/`;
-  const articleCards = articles.map((article) => `<a class="card" href="https://${DOMAIN}/articles/${article.slug}/"><h3>${esc(article.title)}</h3><p>${esc(article.excerpt)}</p><span class="more">Read guide →</span></a>`).join("");
+  const articleCards = articles.map((article) => `<a class="card" href="https://${DOMAIN}/articles/${article.slug}/"><h3>${esc(article.title)}</h3><p>${esc(article.summary || article.directAnswer)}</p><span class="more">Read guide →</span></a>`).join("");
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -204,7 +204,7 @@ export function articlePage(article: (typeof articles)[number]) {
       {
         "@type": "Article",
         headline: article.title,
-        description: article.excerpt,
+        description: article.summary || article.directAnswer,
         url: canonical,
         publisher: { "@type": "Organization", name: "Garage Door Gazette", url: `https://${DOMAIN}/` }
       },
@@ -446,61 +446,6 @@ export function localServicePage(state: StateRow, city: [string, string], servic
 
   const body = `<main><section class="hero"><div class="wrap hero-grid"><div><div class="crumb"><a href="https://${state.slug}.${DOMAIN}/">${esc(state.name)}</a> / <a href="https://${host}/">${esc(cityName)}</a> / ${esc(service.title)}</div><span class="eyebrow">Garage Service</span><h1>${esc(service.title)} in <em>${esc(cityName)}, ${esc(state.name)}</em></h1><p>${esc(service.summary)} Review diagnosis tips, inspection considerations, and local repair options.</p><div class="rating-badge"><span class="stars">★★★★★</span><span>4.9/5 ⭐ Rating for ${esc(service.title)}</span></div>${trustChecklistHtml()}<div class="buttons"><a class="btn" href="tel:${PHONE}">Call ${PHONE}</a><a class="btn ghost" href="https://${host}/">All ${services.length} City Services</a></div></div><div>${leadFormHtml(`${service.title} ${cityName}`)}</div></div></section><section class="section soft"><div class="wrap"><div class="head"><div><span class="eyeline">What to expect</span><h2>An inspection-first repair process</h2></div></div><div class="process"><div class="step"><b>01</b><h3>Initiate Request</h3><p>Call or submit quote form with door details.</p></div><div class="step"><b>02</b><h3>Provide Details</h3><p>Share specific symptoms (broken spring, off-track, noise).</p></div><div class="step"><b>03</b><h3>On-Site Inspection</h3><p>Technician inspects springs, cables, tracks, and opener.</p></div><div class="step"><b>04</b><h3>Quality Repair</h3><p>Complete repair with itemized invoice and warranty.</p></div></div></div></section></main>`;
   return shell(`${service.title} in ${cityName}, ${state.name}`, `${service.summary} Review local garage door service info for ${cityName}, ${state.name}.`, canonical, body, schema);
-}
-
-export function articlesHubPage() {
-  const canonical = `https://${DOMAIN}/articles/`;
-  const cardsHtml = articles.map((art) => `
-    <div class="service-card">
-      <div class="category-badge">${esc(art.category)}</div>
-      <h3>${esc(art.title)}</h3>
-      <p>${esc(art.summary)}</p>
-      <a class="btn ghost" href="https://${DOMAIN}/articles/${art.slug}/">Read Guide →</a>
-    </div>
-  `).join("");
-
-  const body = `<main>
-  <section class="hero"><div class="wrap">
-    <div class="crumb"><a href="https://${DOMAIN}/">Home</a> / Articles</div>
-    <h1>Garage Door Repair <span>Guides &amp; Technical Articles</span></h1>
-    <p style="color:#cbd5e1;font-size:16px;">Comprehensive troubleshooting, safety, and maintenance guides for homeowners.</p>
-  </div></section>
-  <section class="section soft"><div class="wrap"><div class="services-grid">${cardsHtml}</div></div></section>
-  </main>`;
-
-  return shell("Garage Door Repair Guides & Technical Articles | Garage Door Gazette", "Read comprehensive troubleshooting and maintenance guides.", canonical, body);
-}
-
-export function articlePage(article: any) {
-  const canonical = `https://${DOMAIN}/articles/${article.slug}/`;
-  const warningList = (article.warningSigns || []).map((item: string) => `<li>⚠️ ${esc(item)}</li>`).join("");
-  const causesList = (article.commonCauses || []).map((item: string) => `<li>🔧 ${esc(item)}</li>`).join("");
-  const checksList = (article.professionalChecks || []).map((item: string) => `<li>✔ ${esc(item)}</li>`).join("");
-
-  const body = `<main>
-  <section class="hero"><div class="wrap">
-    <div class="crumb"><a href="https://${DOMAIN}/">Home</a> / <a href="https://${DOMAIN}/articles/">Articles</a> / ${esc(article.category)}</div>
-    <h1>${esc(article.title)}</h1>
-    <p style="color:#cbd5e1;font-size:16px;">${esc(article.summary)}</p>
-  </div></section>
-  <section class="section"><div class="wrap" style="max-width:860px;font-size:16px;line-height:1.8;color:#334155;">
-    <div style="background:#f0f9ff;border-left:4px solid #0ea5e9;padding:24px;border-radius:12px;margin-bottom:32px;">
-      <h3 style="margin:0 0 8px;color:#0369a1;font-size:18px;">💡 Direct Answer Summary</h3>
-      <p style="margin:0;color:#0c4a6e;font-size:15px;line-height:1.6;">${esc(article.directAnswer)}</p>
-    </div>
-
-    <h2>Key Warning Signs</h2>
-    <ul style="list-style:none;padding:0;">${warningList}</ul>
-
-    <h2>Common Causes</h2>
-    <ul style="list-style:none;padding:0;">${causesList}</ul>
-
-    <h2>Professional Inspection &amp; Repair Checklist</h2>
-    <ul style="list-style:none;padding:0;">${checksList}</ul>
-  </div></section>
-  </main>`;
-
-  return shell(`${article.title} | Garage Door Gazette`, article.summary, canonical, body);
 }
 
 export function notFoundPage(message: string) {
