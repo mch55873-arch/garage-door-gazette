@@ -976,52 +976,126 @@ export function aboutUsPage() {
 export function contactUsPage() {
   const canonical = `https://${DOMAIN}/contact/`;
   const body = `<main>
-  <section class="page-hero">
-    <div class="wrap" style="display:grid;grid-template-columns:1fr 420px;gap:44px;align-items:start;">
-      <div>
-        <div class="crumb-trail"><a href="https://${DOMAIN}/">Home</a> / Contact Us</div>
-        <span class="tag-badge">24/7 EMERGENCY DISPATCH CENTER</span>
-        <h1>Get In Touch for <span>Fast 24/7 Service</span></h1>
-        <p style="color:#cbd5e1;font-size:16px;line-height:1.7;">Have an urgent garage door emergency or need a price estimate for spring replacement? Our dispatch team is standing by 24/7 across all 50 states.</p>
-        
-        <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:26px;margin-top:28px;">
-          <h3 style="color:#fff;font-size:20px;margin:0 0 16px;">📞 Direct Dispatch Hotline</h3>
-          <p style="margin:0 0 12px;font-size:18px;font-weight:800;color:#38bdf8;">Call: ${PHONE_DISPLAY}</p>
-          <p style="margin:0 0 8px;font-size:14px;color:#cbd5e1;">✉️ Email: dispatch@${DOMAIN}</p>
-          <p style="margin:0 0 8px;font-size:14px;color:#cbd5e1;">📍 Headquarters: ${ADDRESS}</p>
-          <p style="margin:0;font-size:14px;color:#10b981;font-weight:700;">🕒 Operating Hours: Open 24 Hours / 7 Days A Week</p>
-        </div>
-      </div>
-      <div>
-        <div class="white-form-card">
-          <h3>Request Free Quote</h3>
-          <p>Instant callback &amp; estimate dispatch</p>
-          <form action="${PHONE_HREF}" method="GET">
-            <div style="margin-bottom:12px;"><input type="text" placeholder="Your Full Name *" required style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid #cbd5e1;background:#f8fafc;font-size:14px;"></div>
-            <div style="margin-bottom:12px;"><input type="tel" placeholder="Phone Number *" required style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid #cbd5e1;background:#f8fafc;font-size:14px;"></div>
-            <div style="margin-bottom:12px;">
-              <select style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid #cbd5e1;background:#f8fafc;font-size:14px;" required>
-                <option value="">Select Service Needed *</option>
-                <option>Garage Door Spring Repair</option>
-                <option>Garage Door Opener Repair/Install</option>
-                <option>Off-Track / Stuck Garage Door</option>
-                <option>Cable &amp; Roller Replacement</option>
-                <option>Emergency 24/7 Garage Repair</option>
-              </select>
-            </div>
-            <div style="margin-bottom:14px;">
-              <textarea placeholder="Describe garage door issue or property location..." style="width:100%;height:90px;padding:12px 14px;border-radius:10px;border:1px solid #cbd5e1;background:#f8fafc;font-size:14px;font-family:inherit;resize:none;"></textarea>
-            </div>
-            <button type="submit" class="btn-cta" style="width:100%;min-height:50px;">Submit &amp; Call ${PHONE_DISPLAY}</button>
-          </form>
-        </div>
-      </div>
+  <!-- HERO HEADER SECTION -->
+  <section class="page-hero" style="padding:64px 0 72px;">
+    <div class="wrap">
+      <div class="crumb-trail"><a href="https://${DOMAIN}/">Home</a> / Contact</div>
+      <h1 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(38px,5vw,52px);font-weight:900;color:#fff;line-height:1.1;margin:12px 0 10px;">
+        Get In Touch for <span style="color:#38bdf8;">Fast Service</span>
+      </h1>
+      <p style="color:#cbd5e1;font-size:16px;margin:0;">Call for same-day help, or request a free quote and we'll get right back to you. Friendly, licensed, and local.</p>
     </div>
   </section>
 
+  <!-- MAIN 2-COLUMN SECTION -->
   <section class="sec-gray" style="padding:70px 0;">
-    <div class="wrap">
-      ${mapEmbedHtml("Chicago, IL Headquarters")}
+    <div class="wrap" style="display:grid;grid-template-columns:1fr 440px;gap:40px;align-items:start;">
+      <!-- LEFT COLUMN: REQUEST A FREE QUOTE FORM CARD -->
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:24px;padding:36px;box-shadow:0 12px 36px rgba(0,0,0,.04);color:#0f172a;">
+        <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;font-weight:900;color:#0d1b2a;margin:0 0 6px;">Request a Free Quote</h2>
+        <p style="color:#64748b;font-size:14px;line-height:1.6;margin:0 0 24px;">Fill out the form and we'll call to confirm your appointment. For emergencies, please call <a href="${PHONE_HREF}" style="color:#0ea5e9;font-weight:800;">${PHONE_DISPLAY}</a>.</p>
+
+        <form action="${PHONE_HREF}" method="GET">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div>
+              <label style="display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:6px;">Full name *</label>
+              <input type="text" placeholder="Jane Doe" required style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;font-size:14px;color:#0f172a;">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:6px;">Phone *</label>
+              <input type="tel" placeholder="(773) 249-5939" required style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;font-size:14px;color:#0f172a;">
+            </div>
+          </div>
+
+          <div style="margin-bottom:16px;">
+            <label style="display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:6px;">Email</label>
+            <input type="email" placeholder="you@example.com" style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;font-size:14px;color:#0f172a;">
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div>
+              <label style="display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:6px;">Service needed</label>
+              <select style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;font-size:14px;color:#0f172a;" required>
+                <option value="">Select Service *</option>
+                <option>Garage Door Spring Repair</option>
+                <option>Opener Repair &amp; Installation</option>
+                <option>Off-Track Door Realignment</option>
+                <option>Cable &amp; Roller Replacement</option>
+                <option>Emergency 24/7 Service</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:6px;">City / Neighborhood</label>
+              <input type="text" placeholder="e.g. Chicago, IL" style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;font-size:14px;color:#0f172a;">
+            </div>
+          </div>
+
+          <div style="margin-bottom:20px;">
+            <label style="display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:6px;">What's going on?</label>
+            <textarea placeholder="e.g. Broken torsion spring, door stuck halfway, unaligned track..." style="width:100%;height:100px;padding:12px 14px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;font-size:14px;color:#0f172a;font-family:inherit;resize:none;"></textarea>
+          </div>
+
+          <button type="submit" class="btn-cta" style="width:100%;min-height:52px;font-size:17px;border-radius:12px;">Send My Request</button>
+          <p style="font-size:12px;color:#94a3b8;margin:12px 0 0;text-align:center;">By submitting, you agree to be contacted about your request. We never share your info.</p>
+        </form>
+      </div>
+
+      <!-- RIGHT COLUMN: CONTACT DETAILS CARD & GOOGLE MAPS EMBED -->
+      <div>
+        <!-- CONTACT DETAILS CARD -->
+        <div style="background:#0b1320;border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:32px;color:#fff;margin-bottom:24px;box-shadow:0 12px 36px rgba(0,0,0,.15);">
+          <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;margin:0 0 22px;color:#fff;">Contact Details</h3>
+
+          <div style="display:flex;align-items:start;gap:14px;margin-bottom:18px;">
+            <div style="width:38px;height:38px;border-radius:10px;background:rgba(14,165,233,.18);color:#38bdf8;display:grid;place-items:center;font-size:18px;">📞</div>
+            <div>
+              <div style="font-size:11px;font-weight:800;color:#94a3b8;letter-spacing:.08em;">PHONE</div>
+              <a href="${PHONE_HREF}" style="font-size:16px;font-weight:800;color:#fff;">${PHONE_DISPLAY}</a>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:start;gap:14px;margin-bottom:18px;">
+            <div style="width:38px;height:38px;border-radius:10px;background:rgba(14,165,233,.18);color:#38bdf8;display:grid;place-items:center;font-size:18px;">✉️</div>
+            <div>
+              <div style="font-size:11px;font-weight:800;color:#94a3b8;letter-spacing:.08em;">EMAIL</div>
+              <div style="font-size:14px;font-weight:600;color:#e2e8f0;">dispatch@${DOMAIN}</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:start;gap:14px;margin-bottom:24px;">
+            <div style="width:38px;height:38px;border-radius:10px;background:rgba(14,165,233,.18);color:#38bdf8;display:grid;place-items:center;font-size:18px;">📍</div>
+            <div>
+              <div style="font-size:11px;font-weight:800;color:#94a3b8;letter-spacing:.08em;">ADDRESS</div>
+              <div style="font-size:14px;font-weight:600;color:#e2e8f0;">${ADDRESS}</div>
+            </div>
+          </div>
+
+          <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:20px;">
+            <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:12px;">Hours of Operation</div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:#cbd5e1;margin-bottom:8px;">
+              <span>Monday – Friday</span>
+              <span style="font-weight:700;color:#fff;">7:00 AM – 7:00 PM</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:#cbd5e1;margin-bottom:8px;">
+              <span>Saturday</span>
+              <span style="font-weight:700;color:#fff;">7:00 AM – 7:00 PM</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:#cbd5e1;margin-bottom:8px;">
+              <span>Sunday</span>
+              <span style="font-weight:700;color:#cbd5e1;">Emergency only</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:#cbd5e1;">
+              <span style="color:#f97316;font-weight:800;">Emergencies</span>
+              <span style="background:#f97316;color:#fff;font-weight:900;padding:2px 8px;border-radius:6px;font-size:12px;">24/7</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- GOOGLE MAPS EMBED -->
+        <div style="border-radius:24px;overflow:hidden;box-shadow:0 12px 36px rgba(0,0,0,.08);border:1px solid #e2e8f0;background:#fff;padding:8px;">
+          <iframe src="https://maps.google.com/maps?q=${encodeURIComponent(ADDRESS)}&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="260" style="border:0;border-radius:18px;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+      </div>
     </div>
   </section>
   </main>`;
