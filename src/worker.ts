@@ -2,17 +2,22 @@ import { articles } from "../data/articles";
 import { services } from "../data/services";
 import usaLocations from "../data/usa_locations.json";
 import {
+  aboutUsPage,
   areasWeServePage,
   articlePage,
   articlesHubPage,
   cityPage,
+  contactUsPage,
+  disclaimerPage,
   homePage,
   infoPage,
   localServicePage,
   nationalServicePage,
   notFoundPage,
+  privacyPolicyPage,
   servicesHubPage,
   statePage,
+  termsOfServicePage,
   type StateRow,
 } from "./locationTemplates";
 import { coreSitemap, sitemapIndex, stateSitemap } from "./sitemaps";
